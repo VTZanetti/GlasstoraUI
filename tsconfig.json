@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "useDefineForClassFields": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "types": ["vite/client"],
+    "paths": {
+      "glasstora": ["./src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.vue", "playground/**/*.ts", "playground/**/*.vue"],
+  "exclude": ["node_modules", "dist", "dist-demo"]
+}

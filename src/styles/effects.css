@@ -1,0 +1,163 @@
+/* ==========================================================================
+   The .gt-glass recipe.
+
+   Three layers, each one enhancing the previous:
+     Layer 0  translucent solid, used when backdrop-filter is unavailable
+     Layer 1  frosted blur, supported by every current browser
+     Layer 2  SVG displacement refraction, gated at runtime to Chromium
+
+   Pseudo-element convention: ::before is the film grain, ::after is the
+   specular border ring.
+   ========================================================================== */
+
+/* Layer 0 */
+.gt-glass {
+  position: relative;
+  background-color: rgb(20 20 20 / 0.92);
+  /* The specular highlight is positioned in viewport space. A fixed background
+     attachment makes one global light position render correctly on every
+     element without per-element JavaScript. */
+  background-image: radial-gradient(
+    var(--gt-specular-size) circle at var(--gt-light-x) var(--gt-light-y),
+    rgb(255 255 255 / var(--gt-specular-intensity)),
+    transparent 60%
+  );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  border: 1px solid rgb(255 255 255 / var(--gt-border-alpha));
+  border-radius: var(--gt-radius-md);
+}
+
+/* Layer 1 */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .gt-glass {
+    background-color: rgb(var(--gt-glass-tint) / var(--gt-glass-alpha));
+    -webkit-backdrop-filter: blur(var(--gt-blur)) brightness(1.08) contrast(1.02);
+    backdrop-filter: blur(var(--gt-blur)) brightness(1.08) contrast(1.02);
+  }
+}
+
+/* Layer 2. The provider sets the attribute after probing the browser. */
+html[data-gt-refract] .gt-glass {
+  backdrop-filter: url(#gt-refraction) blur(var(--gt-blur)) brightness(1.08) contrast(1.02);
+}
+
+/* Film grain */
+.gt-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--gt-grain);
+  opacity: var(--gt-grain-opacity);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+html[data-gt-grain='off'] .gt-glass::before {
+  display: none;
+}
+
+/* Specular border ring. A white hotspot travels along the 1px border, masked
+   so only the border area is painted. */
+.gt-glass::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: radial-gradient(
+    200px circle at var(--gt-light-x) var(--gt-light-y),
+    rgb(255 255 255 / var(--gt-ring-specular)),
+    transparent 70%
+  );
+  background-origin: border-box;
+  background-attachment: fixed;
+  -webkit-mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0) border-box;
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) padding-box,
+    linear-gradient(#000 0 0) border-box;
+  mask-composite: exclude;
+}
+
+/* Condensation. Interactive surfaces fog up on hover. */
+.gt-glass--interactive {
+  transition:
+    background-color var(--gt-dur-2) var(--gt-ease),
+    backdrop-filter var(--gt-dur-2) var(--gt-ease),
+    border-color var(--gt-dur-2) var(--gt-ease),
+    transform var(--gt-dur-1) var(--gt-ease);
+}
+
+.gt-glass--interactive:hover {
+  --gt-blur: var(--gt-blur-hover);
+  --gt-glass-alpha: var(--gt-glass-alpha-hover);
+}
+
+/* iOS fallback. Safari on iOS does not honour fixed background attachment,
+   so the moving highlight is replaced by a static diagonal sheen. */
+html[data-gt-sheen='static'] .gt-glass,
+html[data-gt-sheen='static'] .gt-glass::after {
+  background-attachment: scroll;
+}
+
+html[data-gt-sheen='static'] .gt-glass {
+  background-image: linear-gradient(155deg, rgb(255 255 255 / 0.1), transparent 45%);
+}
+
+html[data-gt-sheen='static'] .gt-glass::after {
+  background-image: linear-gradient(155deg, rgb(255 255 255 / 0.4), transparent 40%);
+}
+
+/* Elevation and radius utilities */
+.gt-elev-0 {
+  box-shadow: var(--gt-elev-0);
+}
+.gt-elev-1 {
+  box-shadow: var(--gt-elev-1);
+}
+.gt-elev-2 {
+  box-shadow: var(--gt-elev-2);
+}
+.gt-elev-3 {
+  box-shadow: var(--gt-elev-3);
+}
+
+.gt-r-sm {
+  border-radius: var(--gt-radius-sm);
+}
+.gt-r-md {
+  border-radius: var(--gt-radius-md);
+}
+.gt-r-lg {
+  border-radius: var(--gt-radius-lg);
+}
+
+/* Optional scanline texture */
+.gt-scanlines {
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgb(255 255 255 / var(--gt-scanline-opacity)) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+/* Accessibility overrides. These must stay last so they win. */
+@media (prefers-reduced-transparency: reduce) {
+  .gt-glass {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    background-image: none !important;
+    background-color: var(--gt-gray-2) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gt-glass--interactive {
+    transition: none;
+  }
+}
