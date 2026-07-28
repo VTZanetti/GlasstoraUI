@@ -4,7 +4,7 @@ let providerCount = 0
 </script>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, provide, readonly, ref } from 'vue'
+import { onBeforeUnmount, onMounted, provide, readonly, ref, watch } from 'vue'
 import { configKey, lightKey, type GlassLightMode } from '../internal/keys'
 import {
   detectRefraction,
@@ -34,7 +34,7 @@ let lastX = 0
 let lastY = 0
 let suspended = false
 let driftStart = 0
-const attrsSet: string[] = []
+const ownedGates = new Set<string>()
 const cleanups: (() => void)[] = []
 
 function writeLight(px: number, py: number) {
@@ -102,21 +102,31 @@ function resume() {
   suspended = false
 }
 
-onMounted(() => {
-  const el = document.documentElement
+function setGate(name: string, value = '') {
+  document.documentElement.setAttribute(name, value)
+  ownedGates.add(name)
+}
+
+function clearGate(name: string) {
+  document.documentElement.removeAttribute(name)
+  ownedGates.delete(name)
+}
+
+// Reapplied whenever the related props change, so consumers can toggle the
+// effects at runtime instead of only at mount.
+function applyGates() {
   const refractOn = props.refraction === 'on' || (props.refraction === 'auto' && detectRefraction())
-  if (refractOn) {
-    el.setAttribute('data-gt-refract', '')
-    attrsSet.push('data-gt-refract')
-  }
-  if (!props.grain) {
-    el.setAttribute('data-gt-grain', 'off')
-    attrsSet.push('data-gt-grain')
-  }
-  if (isIOS()) {
-    el.setAttribute('data-gt-sheen', 'static')
-    attrsSet.push('data-gt-sheen')
-  }
+  if (refractOn) setGate('data-gt-refract')
+  else clearGate('data-gt-refract')
+
+  if (props.grain) clearGate('data-gt-grain')
+  else setGate('data-gt-grain', 'off')
+
+  if (isIOS()) setGate('data-gt-sheen', 'static')
+}
+
+onMounted(() => {
+  applyGates()
 
   for (const query of ['(prefers-reduced-motion: reduce)', '(pointer: coarse)']) {
     const mq = window.matchMedia(query)
@@ -128,12 +138,16 @@ onMounted(() => {
   startEngine()
 })
 
+watch([() => props.refraction, () => props.grain], applyGates)
+watch(() => props.trackPointer, startEngine)
+
 onBeforeUnmount(() => {
   if (typeof window === 'undefined') return
   stopEngine()
   cleanups.forEach((fn) => fn())
   const el = document.documentElement
-  attrsSet.forEach((a) => el.removeAttribute(a))
+  ownedGates.forEach((name) => el.removeAttribute(name))
+  ownedGates.clear()
   el.style.removeProperty('--gt-light-x')
   el.style.removeProperty('--gt-light-y')
   providerCount--
