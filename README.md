@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vtzanetti.github.io/GlasstoraUI/"><strong>Ver a demo</strong></a>
+  <a href="https://glasstora.zanetti.tech/"><strong>Ver a demo</strong></a>
 </p>
 
 ## Diferenciais

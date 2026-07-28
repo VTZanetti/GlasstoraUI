@@ -2,10 +2,9 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
-// GitHub Pages serves the demo from a repository subpath. Hosts that serve from
-// the domain root, such as Netlify, Vercel and Cloudflare Pages, only need
-// DEMO_BASE=/ in the build environment.
-const base = process.env.DEMO_BASE ?? '/GlasstoraUI/'
+// The demo is served from the domain root. Hosts that serve it from a subpath
+// need that subpath in the build environment, such as DEMO_BASE=/glasstora/.
+const base = process.env.DEMO_BASE ?? '/'
 
 export default defineConfig(({ command }) => ({
   root: 'playground',

@@ -91,13 +91,12 @@ exemplo de código.
 
 ## Publicando a demo
 
-O deploy padrão vai para o GitHub Pages, a partir do fluxo `.github/workflows/pages.yml`, sempre
-que algo entra na branch `main`. É preciso definir a origem do Pages como GitHub Actions nas
-configurações do repositório uma única vez.
+O deploy vai para o Netlify, com as configurações já declaradas em `netlify.toml`: o comando
+`npm run build:demo`, o diretório publicado `dist-demo` e a versão do Node. Basta conectar o
+repositório ao site uma única vez, e cada mudança na branch `main` gera uma nova publicação.
 
-Para publicar em um serviço que serve a partir da raiz do domínio, como Netlify, Vercel ou
-Cloudflare Pages, use o comando `npm run build:demo`, o diretório `dist-demo` e a variável de
-ambiente `DEMO_BASE=/`.
+Para publicar em um serviço que serve a partir de um subcaminho, defina a variável de ambiente
+`DEMO_BASE` com esse subcaminho, por exemplo `DEMO_BASE=/glasstora/`.
 
 ## Reportando problemas
 

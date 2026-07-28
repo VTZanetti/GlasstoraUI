@@ -26,7 +26,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Propriedade `closeLabel` no `GlassModal`, com padrão em inglês, para traduzir o nome acessível do
   botão de fechar.
 - Página de demonstração com navegação lateral, controles de propriedade em tempo real e exemplos
-  de código copiáveis para cada componente, publicada no GitHub Pages.
+  de código copiáveis para cada componente, publicada no Netlify.
 
 [não lançado]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/VTZanetti/GlasstoraUI/releases/tag/v0.1.0
