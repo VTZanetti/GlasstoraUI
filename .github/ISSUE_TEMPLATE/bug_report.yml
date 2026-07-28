@@ -1,0 +1,45 @@
+name: Relatar um problema
+description: Informe um comportamento incorreto da biblioteca
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: O que acontece e o que era esperado.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Como reproduzir
+      description: Passos, trecho de código ou link para um exemplo mínimo.
+      placeholder: |
+        1. Monte o componente com estas propriedades
+        2. Interaja desta forma
+        3. Observe o resultado
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versão do Glasstora
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Navegador e sistema
+      placeholder: Chrome 140 no Windows 11
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Informações adicionais
+      description: Capturas de tela, mensagens do console ou qualquer outro detalhe útil.
