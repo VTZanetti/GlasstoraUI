@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build:demo"
+  publish = "dist-demo"
+
+[build.environment]
+  # Netlify serves from the domain root, unlike GitHub Pages, which serves the
+  # demo from a repository subpath.
+  DEMO_BASE = "/"
+  NODE_VERSION = "24"
