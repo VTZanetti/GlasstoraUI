@@ -20,6 +20,21 @@ function mountModal(props: Record<string, unknown> = {}) {
 }
 
 describe('GlassModal', () => {
+  it('labels the close button in English by default and accepts an override', async () => {
+    wrapper = mountModal()
+    await nextTick()
+    expect(document.body.querySelector('.gt-modal__close')?.getAttribute('aria-label')).toBe(
+      'Close',
+    )
+
+    wrapper.unmount()
+    wrapper = mountModal({ closeLabel: 'Fechar' })
+    await nextTick()
+    expect(document.body.querySelector('.gt-modal__close')?.getAttribute('aria-label')).toBe(
+      'Fechar',
+    )
+  })
+
   it('teleports the panel to the body when open', async () => {
     wrapper = mountModal()
     await nextTick()
@@ -56,11 +71,12 @@ describe('GlassModal', () => {
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 
-  it('restores the document overflow after closing', async () => {
+  it('restores the document overflow and scrollbar padding after closing', async () => {
     wrapper = mountModal()
     await nextTick()
     expect(document.documentElement.style.overflow).toBe('hidden')
     await wrapper.setProps({ modelValue: false })
     expect(document.documentElement.style.overflow).toBe('')
+    expect(document.documentElement.style.paddingRight).toBe('')
   })
 })

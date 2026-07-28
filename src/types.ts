@@ -69,6 +69,8 @@ export interface GlassModalProps {
   width?: string
   closeOnOverlay?: boolean
   closeOnEsc?: boolean
+  /** Accessible name of the close button. Override it to localise the dialog. */
+  closeLabel?: string
 }
 
 export interface GlassTerminalProps {

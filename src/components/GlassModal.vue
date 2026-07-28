@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<GlassModalProps>(), {
   width: '28rem',
   closeOnOverlay: true,
   closeOnEsc: true,
+  closeLabel: 'Close',
 })
 
 const emit = defineEmits<{ 'update:modelValue': [value: boolean]; close: [] }>()
@@ -18,6 +19,7 @@ const panelRef = ref<HTMLElement | null>(null)
 let releaseTrap: (() => void) | undefined
 let prevActive: HTMLElement | null = null
 let prevOverflow = ''
+let prevPaddingRight = ''
 
 function close() {
   emit('update:modelValue', false)
@@ -37,6 +39,7 @@ function teardown() {
   if (typeof document === 'undefined') return
   document.removeEventListener('keydown', onKeydown)
   document.documentElement.style.overflow = prevOverflow
+  document.documentElement.style.paddingRight = prevPaddingRight
   prevActive?.focus?.()
   prevActive = null
 }
@@ -47,8 +50,15 @@ watch(
     if (typeof document === 'undefined') return
     if (open) {
       prevActive = document.activeElement as HTMLElement | null
-      prevOverflow = document.documentElement.style.overflow
-      document.documentElement.style.overflow = 'hidden'
+      const root = document.documentElement
+      prevOverflow = root.style.overflow
+      prevPaddingRight = root.style.paddingRight
+      // Hiding the page scrollbar hands its width back to the layout and the
+      // whole page shifts. Reserve the same width as padding while locked.
+      // Measured before the lock, since hiding the bar changes clientWidth.
+      const scrollbarGap = window.innerWidth - root.clientWidth
+      if (scrollbarGap > 0) root.style.paddingRight = `${scrollbarGap}px`
+      root.style.overflow = 'hidden'
       document.addEventListener('keydown', onKeydown)
       await nextTick()
       if (panelRef.value) {
@@ -86,7 +96,7 @@ onBeforeUnmount(() => {
             <slot name="header">
               <h2 class="gt-modal__title">{{ title }}</h2>
             </slot>
-            <button class="gt-modal__close" type="button" aria-label="Fechar" @click="close()">
+            <button class="gt-modal__close" type="button" :aria-label="closeLabel" @click="close()">
               ✕
             </button>
           </header>
@@ -119,12 +129,16 @@ onBeforeUnmount(() => {
   background: rgb(0 0 0 / 0.6);
 }
 
+/* The panel itself never scrolls. Its ::after ring sits 1px outside the box,
+   which a scroll container would count as overflow and grow scrollbars for,
+   besides clipping the ring. The body below is the scroll area instead. */
 .gt-modal__panel {
   position: relative;
   z-index: 1;
+  display: flex;
+  flex-direction: column;
   max-width: 100%;
   max-height: calc(100vh - 48px);
-  overflow: auto;
   color: var(--gt-fg);
   border-radius: var(--gt-radius-lg);
   outline: none;
@@ -132,6 +146,7 @@ onBeforeUnmount(() => {
 
 .gt-modal__header {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -167,19 +182,25 @@ onBeforeUnmount(() => {
 }
 
 .gt-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden auto;
   padding: 16px 20px;
   color: var(--gt-fg-muted);
   line-height: 1.7;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 255 255 / 0.25) transparent;
 }
 
 .gt-modal__footer {
   display: flex;
+  flex-shrink: 0;
   justify-content: flex-end;
   gap: 10px;
   padding: 0 20px 20px;
 }
 
-/* Transição */
+/* Transition */
 .gt-modal-enter-active,
 .gt-modal-leave-active {
   transition: opacity var(--gt-dur-2) var(--gt-ease);
