@@ -22,6 +22,9 @@ envolver a aplicação uma única vez.
 
 Slot padrão: conteúdo da aplicação.
 
+As propriedades são reativas. Alterar `refraction`, `grain` ou `trackPointer` depois da montagem
+reconfigura os efeitos na hora, sem precisar remontar o provider.
+
 ## GlassSurface
 
 Painel base de vidro, usado como bloco de construção dos demais componentes.
@@ -96,18 +99,20 @@ Sem propriedades. O tamanho acompanha a fonte do contexto. Slot padrão: texto d
 
 ## GlassModal
 
-| Propriedade      | Tipo      | Padrão    | Descrição                   |
-| ---------------- | --------- | --------- | --------------------------- |
-| `modelValue`     | `boolean` | requerido | Controla a abertura         |
-| `title`          | `string`  | `''`      | Título exibido no cabeçalho |
-| `width`          | `string`  | `'28rem'` | Largura do painel           |
-| `closeOnOverlay` | `boolean` | `true`    | Fecha ao clicar fora        |
-| `closeOnEsc`     | `boolean` | `true`    | Fecha com a tecla Esc       |
+| Propriedade      | Tipo      | Padrão    | Descrição                         |
+| ---------------- | --------- | --------- | --------------------------------- |
+| `modelValue`     | `boolean` | requerido | Controla a abertura               |
+| `title`          | `string`  | `''`      | Título exibido no cabeçalho       |
+| `width`          | `string`  | `'28rem'` | Largura do painel                 |
+| `closeOnOverlay` | `boolean` | `true`    | Fecha ao clicar fora              |
+| `closeOnEsc`     | `boolean` | `true`    | Fecha com a tecla Esc             |
+| `closeLabel`     | `string`  | `'Close'` | Nome acessível do botão de fechar |
 
 Eventos: `update:modelValue` e `close`. Slots: padrão, `header` e `footer`.
 
 Ao abrir, o componente prende o foco no painel, bloqueia a rolagem da página e devolve o foco ao
-elemento anterior quando fecha.
+elemento anterior quando fecha. Ao bloquear a rolagem, a largura da barra é compensada com um
+espaçamento equivalente, então o conteúdo da página não desloca quando o modal abre e fecha.
 
 ## GlassTerminal
 

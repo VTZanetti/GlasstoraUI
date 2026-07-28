@@ -21,7 +21,12 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Dez componentes: `GlassProvider`, `GlassSurface`, `GlassButton`, `GlassInput`, `GlassSwitch`,
   `GlassKbd`, `GlassBadge`, `GlassProgress`, `GlassModal` e `GlassTerminal`.
 - Suporte a `prefers-reduced-motion` e `prefers-reduced-transparency`.
-- Aplicação de demonstração publicada no GitHub Pages.
+- Propriedades reativas no `GlassProvider`, então `refraction`, `grain` e `trackPointer` podem
+  mudar depois da montagem.
+- Propriedade `closeLabel` no `GlassModal`, com padrão em inglês, para traduzir o nome acessível do
+  botão de fechar.
+- Página de demonstração com navegação lateral, controles de propriedade em tempo real e exemplos
+  de código copiáveis para cada componente, publicada no GitHub Pages.
 
 [não lançado]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/VTZanetti/GlasstoraUI/releases/tag/v0.1.0

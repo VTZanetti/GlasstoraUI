@@ -35,6 +35,8 @@ Antes de abrir um pull request, os comandos `lint`, `typecheck`, `test` e `build
 Para manter o projeto legível tanto para quem lê português quanto para quem chega pelo GitHub:
 
 - Código, comentários, nomes de teste e mensagens de commit em inglês.
+- Textos que a biblioteca renderiza, como rótulos acessíveis, também em inglês, expostos como
+  propriedade para que cada aplicação traduza.
 - Documentação e textos da demo em português.
 
 ## Mensagens de commit
@@ -77,9 +79,25 @@ src/
   internal/     utilidades privadas, não exportadas no pacote
   styles/       tokens, base e efeitos de vidro
   tests/        testes unitários
-playground/     aplicação de demonstração
+playground/
+  components/   peças da própria demo, como controles e blocos de código
+  sections/     seções da página
 docs/           documentação de referência
 ```
+
+Ao adicionar um componente, inclua também um bloco na seção de showcase da demo, em
+`playground/sections/ComponentsShowcase.vue`, com os controles das propriedades principais e um
+exemplo de código.
+
+## Publicando a demo
+
+O deploy padrão vai para o GitHub Pages, a partir do fluxo `.github/workflows/pages.yml`, sempre
+que algo entra na branch `main`. É preciso definir a origem do Pages como GitHub Actions nas
+configurações do repositório uma única vez.
+
+Para publicar em um serviço que serve a partir da raiz do domínio, como Netlify, Vercel ou
+Cloudflare Pages, use o comando `npm run build:demo`, o diretório `dist-demo` e a variável de
+ambiente `DEMO_BASE=/`.
 
 ## Reportando problemas
 
