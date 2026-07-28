@@ -19,7 +19,7 @@ function openGitHub() {
 </script>
 
 <template>
-  <section class="hero">
+  <section id="inicio" class="hero">
     <p class="demo-kicker">glasstora ui · v0.1.0</p>
     <h1 class="hero__title">GLASSTORA</h1>
     <p class="hero__tagline">
