@@ -50,9 +50,24 @@ Os tokens também podem ser redefinidos em qualquer contêiner, o que limita o e
 | `--gt-blur-hover`        | `22px`        | Raio do blur durante a condensação    |
 | `--gt-border-alpha`      | `0.14`        | Opacidade da borda                    |
 
+## Traços e preenchimentos
+
+Todo filete branco e todo preenchimento chapado da biblioteca lê esta tonalidade mais um dos alfas
+abaixo. É o que permite o tema claro virar todos eles de uma vez, trocando a tonalidade de branco
+para preto.
+
+| Token                    | Padrão        | Uso                                        |
+| ------------------------ | ------------- | ------------------------------------------ |
+| `--gt-line-tint`         | `255 255 255` | Tonalidade dos filetes, em componentes RGB |
+| `--gt-line-alpha`        | `0.08`        | Filete discreto, como a barra do terminal  |
+| `--gt-line-strong-alpha` | `0.25`        | Filete visível, como a borda de uma tecla  |
+| `--gt-fill-alpha`        | `0.06`        | Preenchimento discreto                     |
+| `--gt-fill-strong-alpha` | `0.14`        | Preenchimento visível                      |
+| `--gt-focus-alpha`       | `0.75`        | Anel de foco                               |
+
 ## Luz
 
-O provider sobrescreve as posições em tempo real. Os valores padrão criam um brilho fixo quando o
+O motor sobrescreve as posições em tempo real. Os valores padrão criam um brilho fixo quando o
 JavaScript não está disponível.
 
 | Token                     | Padrão  | Uso                            |
@@ -62,6 +77,30 @@ JavaScript não está disponível.
 | `--gt-specular-size`      | `340px` | Raio do brilho central         |
 | `--gt-specular-intensity` | `0.12`  | Intensidade do brilho central  |
 | `--gt-ring-specular`      | `0.55`  | Intensidade do brilho na borda |
+
+### Modelo de luz por elemento
+
+| Token                  | Padrão                              | Uso                                               |
+| ---------------------- | ----------------------------------- | ------------------------------------------------- |
+| `--gt-ring-size`       | `calc(var(--gt-specular-size)*0.6)` | Raio do brilho no anel, antes fixo em 200px       |
+| `--gt-rim-alpha`       | `0.5`                               | Clareamento da borda voltada para a luz           |
+| `--gt-rim-shade-alpha` | `0`                                 | Sombreamento da borda oposta, usado no tema claro |
+| `--gt-shade-tint`      | `0 0 0`                             | Cor do sombreamento, em componentes RGB           |
+| `--gt-light-height`    | `520px`                             | Altura virtual da fonte sobre o plano da página   |
+| `--gt-light-falloff`   | `900px`                             | Distância, a partir da borda, onde a luz para     |
+
+As cinco propriedades escritas em cada superfície (`--gt-light-u`, `--gt-light-v`,
+`--gt-light-angle`, `--gt-light-energy` e `--gt-light-incidence`) estão descritas em
+[composicao.md](composicao.md).
+
+## Tema
+
+O tema escuro é o padrão. Para o claro, ponha `data-gt-theme="light"` no elemento `html`, ou deixe o
+`GlassProvider` resolver com `theme="auto"`.
+
+Sobre fundo claro um brilho branco praticamente não aparece, então a direção da luz passa a ser lida
+por sombreamento: o `--gt-specular-intensity` cai e o `--gt-rim-shade-alpha` assume, escurecendo a
+borda oposta à luz.
 
 ## Textura
 
@@ -101,8 +140,13 @@ JavaScript não está disponível.
 
 O `GlassProvider` escreve estes atributos no elemento `html`, e o CSS reage a eles.
 
-| Atributo                 | Efeito                                              |
-| ------------------------ | --------------------------------------------------- |
-| `data-gt-refract`        | Ativa o filtro de refração                          |
-| `data-gt-grain="off"`    | Desliga o grain                                     |
-| `data-gt-sheen="static"` | Troca o brilho dinâmico por um reflexo fixo, no iOS |
+| Atributo                 | Efeito                                                  |
+| ------------------------ | ------------------------------------------------------- |
+| `data-gt-refract`        | Ativa o filtro de refração                              |
+| `data-gt-grain="off"`    | Desliga o grain                                         |
+| `data-gt-sheen="static"` | Troca o brilho dinâmico por um reflexo fixo, no iOS     |
+| `data-gt-theme`          | `"dark"` ou `"light"`, escrito com o valor já resolvido |
+
+Além desses, o motor de luz escreve `data-gt-lit` em cada superfície que ele dirige. É o que separa
+a receita nova, calculada por elemento, da receita da 0.1.0, posicionada em espaço de tela. Qualquer
+`.gt-glass` escrito à mão, que o motor nunca viu, continua exatamente como estava.
