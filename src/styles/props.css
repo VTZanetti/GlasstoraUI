@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Registered custom properties for the element light model.
+
+   These stay outside the glasstora cascade layer on purpose: @property is a
+   registration, not a style rule, so a layer would add nothing.
+
+   inherits: true is not the default choice it looks like. Non inherited
+   properties would keep every write local to the surface it was written on,
+   which is cheaper, but a pseudo-element does not inherit them: ::before and
+   ::after take inheritable properties from their originating element and reset
+   everything else to the initial value. The specular ring is an ::after, so
+   with inherits: false it would sit frozen at 50% 28% while the surface under
+   it followed the light. Inheriting costs a subtree invalidation per write,
+   which is still far less than the 0.1.0 behaviour of writing one inherited
+   property on <html> and invalidating the whole document every frame.
+
+   What registration still buys, whatever the inheritance:
+     - an invalid write falls back to initial-value instead of unsetting the
+       property and taking the whole background with it
+     - the values become interpolable, so a transition on them is possible
+
+   Browsers without @property still work: .gt-glass declares the same five
+   values as plain fallbacks, so every var() resolves either way.
+   ========================================================================== */
+
+@property --gt-light-u {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --gt-light-v {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 28%;
+}
+
+@property --gt-light-angle {
+  syntax: '<angle>';
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@property --gt-light-energy {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --gt-light-incidence {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0.7;
+}
