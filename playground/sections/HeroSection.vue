@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GlassBadge, GlassButton, GlassTerminal } from 'glasstora'
+import { GlassBadge, GlassButton, GlassTerminal, VERSION } from 'glasstora'
 
 const bootLines = [
   'npm i glasstora',
@@ -20,14 +20,14 @@ function openGitHub() {
 
 <template>
   <section id="inicio" class="hero">
-    <p class="demo-kicker">glasstora ui · v0.1.0</p>
+    <p class="demo-kicker">glasstora ui · v{{ VERSION }}</p>
     <h1 class="hero__title">GLASSTORA</h1>
     <p class="hero__tagline">
       Componentes de vidro líquido para Vue 3, com refração real, uma fonte de luz global e paleta
       monocromática.
     </p>
     <div class="hero__badges">
-      <GlassBadge>v0.1.0</GlassBadge>
+      <GlassBadge>v{{ VERSION }}</GlassBadge>
       <GlassBadge variant="outline" :dot="false">MIT</GlassBadge>
       <GlassBadge variant="outline" :dot="false">Vue 3</GlassBadge>
       <GlassBadge variant="solid" :dot="false">sem dependências</GlassBadge>
@@ -56,7 +56,7 @@ function openGitHub() {
 .hero__tagline {
   margin: 0 0 24px;
   max-width: 58ch;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
   line-height: 1.8;
   font-size: 15px;
 }

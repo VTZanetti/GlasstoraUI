@@ -1,3 +1,4 @@
+import { createRequire } from 'node:module'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -6,10 +7,18 @@ import vue from '@vitejs/plugin-vue'
 // need that subpath in the build environment, such as DEMO_BASE=/glasstora/.
 const base = process.env.DEMO_BASE ?? '/'
 
+// The demo consumes the library from source through an alias, so it has to
+// define the same build constant the library build does. Without it the page
+// would fall back to the placeholder version.
+const { version } = createRequire(import.meta.url)('./package.json') as { version: string }
+
 export default defineConfig(({ command }) => ({
   root: 'playground',
   base: command === 'build' ? base : '/',
   plugins: [vue()],
+  define: {
+    __GLASSTORA_VERSION__: JSON.stringify(version),
+  },
   resolve: {
     // The stylesheet entry comes first, because the bare specifier would
     // otherwise swallow it and resolve to src/index.ts/style.css.
