@@ -11,9 +11,18 @@ export default defineConfig(({ command }) => ({
   base: command === 'build' ? base : '/',
   plugins: [vue()],
   resolve: {
-    alias: {
-      glasstora: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
-    },
+    // The stylesheet entry comes first, because the bare specifier would
+    // otherwise swallow it and resolve to src/index.ts/style.css.
+    alias: [
+      {
+        find: 'glasstora/style.css',
+        replacement: fileURLToPath(new URL('./src/styles/index.css', import.meta.url)),
+      },
+      {
+        find: 'glasstora',
+        replacement: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
+      },
+    ],
   },
   build: {
     outDir: fileURLToPath(new URL('./dist-demo', import.meta.url)),
