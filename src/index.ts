@@ -2,34 +2,76 @@ import './styles/index.css'
 
 export { default as GlassProvider } from './components/GlassProvider.vue'
 export { default as GlassSurface } from './components/GlassSurface.vue'
+export { default as GlassCard } from './components/GlassCard.vue'
+export { default as GlassDivider } from './components/GlassDivider.vue'
 export { default as GlassButton } from './components/GlassButton.vue'
 export { default as GlassInput } from './components/GlassInput.vue'
+export { default as GlassTextarea } from './components/GlassTextarea.vue'
+export { default as GlassField } from './components/GlassField.vue'
+export { default as GlassCheckbox } from './components/GlassCheckbox.vue'
 export { default as GlassSwitch } from './components/GlassSwitch.vue'
 export { default as GlassKbd } from './components/GlassKbd.vue'
 export { default as GlassBadge } from './components/GlassBadge.vue'
+export { default as GlassAvatar } from './components/GlassAvatar.vue'
+export { default as GlassSpinner } from './components/GlassSpinner.vue'
+export { default as GlassSkeleton } from './components/GlassSkeleton.vue'
 export { default as GlassProgress } from './components/GlassProgress.vue'
+export { default as GlassAlert } from './components/GlassAlert.vue'
+export { default as GlassTooltip } from './components/GlassTooltip.vue'
+export { default as GlassPopover } from './components/GlassPopover.vue'
 export { default as GlassModal } from './components/GlassModal.vue'
 export { default as GlassTerminal } from './components/GlassTerminal.vue'
 
 export { useGlassLight } from './composables/useGlassLight'
+export { useGlassConfig } from './composables/useGlassConfig'
+export { useGlassSurface } from './composables/useGlassSurface'
 export {
   detectRefraction,
   prefersReducedMotion,
   hasCoarsePointer,
+  isIOS,
 } from './composables/capabilities'
+
+export { vGlass } from './directives/glass'
+export { Glasstora, type GlasstoraOptions } from './plugin'
+
+export { configureLight, getLightTuning, surfaceCount } from './internal/lightRegistry'
+export type {
+  LightTuning,
+  SurfaceLight,
+  RegisterOptions,
+  SurfaceHandle,
+} from './internal/lightRegistry'
+export type { UseGlassSurfaceOptions, UseGlassSurfaceReturn } from './composables/useGlassSurface'
+export type { GlassDirectiveValue } from './directives/glass'
 
 export type { GlassLight, GlassLightMode, GlassConfig } from './internal/keys'
 export type {
   GlassSize,
+  GlassRadius,
+  GlassElevation,
+  GlassTheme,
+  GlassPlacement,
   GlassProviderProps,
   GlassSurfaceProps,
+  GlassCardProps,
+  GlassDividerProps,
   GlassButtonProps,
   GlassInputProps,
+  GlassTextareaProps,
+  GlassFieldProps,
+  GlassCheckboxProps,
   GlassSwitchProps,
   GlassBadgeProps,
+  GlassAvatarProps,
+  GlassSpinnerProps,
+  GlassSkeletonProps,
   GlassProgressProps,
+  GlassAlertProps,
+  GlassTooltipProps,
+  GlassPopoverProps,
   GlassModalProps,
   GlassTerminalProps,
 } from './types'
 
-export const VERSION = '0.1.0'
+export { VERSION } from './internal/version'
