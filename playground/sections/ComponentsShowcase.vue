@@ -1,15 +1,27 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import {
+  GlassAlert,
+  GlassAvatar,
   GlassBadge,
   GlassButton,
+  GlassCard,
+  GlassCheckbox,
+  GlassDivider,
+  GlassField,
   GlassInput,
   GlassKbd,
   GlassModal,
+  GlassPopover,
   GlassProgress,
+  GlassSkeleton,
+  GlassSpinner,
   GlassSurface,
   GlassSwitch,
   GlassTerminal,
+  GlassTextarea,
+  GlassTooltip,
+  type GlassPlacement,
   type GlassSize,
 } from 'glasstora'
 import ShowcaseCard from '../components/ShowcaseCard.vue'
@@ -19,10 +31,11 @@ import RangeControl from '../components/RangeControl.vue'
 
 const SIZES = ['sm', 'md', 'lg']
 
-const props = defineProps<{ grain: boolean; refraction: string }>()
+const props = defineProps<{ grain: boolean; refraction: string; theme: string }>()
 const emit = defineEmits<{
   'update:grain': [value: boolean]
   'update:refraction': [value: string]
+  'update:theme': [value: string]
 }>()
 
 /* The controls work with plain strings. The typed values are derived here so
@@ -31,7 +44,11 @@ const emit = defineEmits<{
 /* GlassProvider */
 const refractionMode = computed(() => props.refraction as 'auto' | 'on' | 'off')
 const providerCode = computed(
-  () => `<GlassProvider refraction="${props.refraction}" :grain="${props.grain}">
+  () => `<GlassProvider
+  refraction="${props.refraction}"
+  theme="${props.theme}"
+  :grain="${props.grain}"
+>
   <App />
 </GlassProvider>`,
 )
@@ -50,6 +67,26 @@ const surfaceCode = computed(
   Conteúdo do painel
 </GlassSurface>`,
 )
+
+/* GlassCard */
+const cardElevationRaw = ref('1')
+const cardInteractive = ref(false)
+const cardElevation = computed(() => Number(cardElevationRaw.value) as 0 | 1 | 2 | 3)
+const cardCode = computed(
+  () => `<GlassCard
+  title="build"
+  :elevation="${cardElevationRaw.value}"${cardInteractive.value ? '\n  interactive' : ''}
+>
+  saída do último deploy
+  <template #footer>
+    <GlassButton size="sm" variant="ghost">detalhes</GlassButton>
+  </template>
+</GlassCard>`,
+)
+
+/* GlassDivider */
+const dividerLabelled = ref(true)
+const dividerCode = computed(() => `<GlassDivider${dividerLabelled.value ? ' label="ou"' : ''} />`)
 
 /* GlassButton */
 const buttonVariantRaw = ref('solid')
@@ -70,6 +107,21 @@ const buttonCode = computed(
 </GlassButton>`,
 )
 
+/* GlassField */
+const fieldValue = ref('')
+const fieldWithError = ref(false)
+const fieldRequired = ref(true)
+const fieldCode = computed(
+  () => `<GlassField
+  label="e-mail"
+  description="usamos apenas para o login"${
+    fieldWithError.value ? `\n  error="informe um endereço válido"` : ''
+  }${fieldRequired.value ? '\n  required' : ''}
+>
+  <GlassInput v-model="email" type="email" />
+</GlassField>`,
+)
+
 /* GlassInput */
 const inputValue = ref('git status')
 const inputSizeRaw = ref('md')
@@ -87,13 +139,40 @@ const inputCode = computed(
 />`,
 )
 
+/* GlassTextarea */
+const textareaValue = ref('')
+const textareaAutosize = ref(true)
+const textareaCode = computed(
+  () => `<GlassTextarea
+  v-model="bio"
+  :rows="2"${textareaAutosize.value ? '\n  autosize' : ''}
+  placeholder="uma linha sobre você"
+/>`,
+)
+
+/* GlassCheckbox */
+const checkboxOn = ref(true)
+const checkboxIndeterminate = ref(false)
+const checkboxSizeRaw = ref('md')
+const checkboxSize = computed(() => checkboxSizeRaw.value as GlassSize)
+const checkboxCode = computed(
+  () => `<GlassCheckbox
+  v-model="aceito"
+  size="${checkboxSizeRaw.value}"${checkboxIndeterminate.value ? '\n  indeterminate' : ''}
+>
+  aceito os termos
+</GlassCheckbox>`,
+)
+
 /* GlassSwitch */
 const switchSizeRaw = ref('md')
-const switchA = ref(true)
-const switchB = ref(false)
+const switchOn = ref(true)
+const switchDisabled = ref(false)
 const switchSize = computed(() => switchSizeRaw.value as GlassSize)
 const switchCode = computed(
-  () => `<GlassSwitch v-model="ativo" size="${switchSizeRaw.value}">
+  () => `<GlassSwitch v-model="ativo" size="${switchSizeRaw.value}"${
+    switchDisabled.value ? ' disabled' : ''
+  }>
   rastrear ponteiro
 </GlassSwitch>`,
 )
@@ -118,6 +197,30 @@ const badgeCode = computed(
 </GlassBadge>`,
 )
 
+/* GlassAvatar */
+const avatarSizeRaw = ref('md')
+const avatarSquare = ref(false)
+const avatarSize = computed(() => avatarSizeRaw.value as GlassSize)
+const avatarCode = computed(
+  () => `<GlassAvatar
+  name="Vitor Zanetti"
+  size="${avatarSizeRaw.value}"${avatarSquare.value ? '\n  square' : ''}
+/>`,
+)
+
+/* GlassSpinner */
+const spinnerSizeRaw = ref('md')
+const spinnerSpeed = ref(80)
+const spinnerSize = computed(() => spinnerSizeRaw.value as GlassSize)
+const spinnerCode = computed(
+  () =>
+    `<GlassSpinner size="${spinnerSizeRaw.value}" :speed="${spinnerSpeed.value}" label="carregando" />`,
+)
+
+/* GlassSkeleton */
+const skeletonLines = ref(3)
+const skeletonCode = computed(() => `<GlassSkeleton :lines="${skeletonLines.value}" />`)
+
 /* GlassProgress */
 const progressValue = ref(64)
 const progressModeRaw = ref('ascii')
@@ -133,6 +236,38 @@ const progressCode = computed(
 />`,
 )
 
+/* GlassAlert */
+const alertVariantRaw = ref('info')
+const alertClosable = ref(true)
+const alertVariant = computed(() => alertVariantRaw.value as 'info' | 'warn' | 'error' | 'success')
+const alertCode = computed(
+  () => `<GlassAlert
+  variant="${alertVariantRaw.value}"
+  title="build lenta"${alertClosable.value ? '\n  closable' : ''}
+>
+  a etapa de tipos levou 42 segundos.
+</GlassAlert>`,
+)
+
+/* GlassTooltip */
+const tooltipPlacementRaw = ref('top')
+const tooltipPlacement = computed(() => tooltipPlacementRaw.value as GlassPlacement)
+const tooltipCode = computed(
+  () => `<GlassTooltip content="copiado" placement="${tooltipPlacementRaw.value}">
+  <GlassButton size="sm">copiar</GlassButton>
+</GlassTooltip>`,
+)
+
+/* GlassPopover */
+const popoverPlacementRaw = ref('bottom-start')
+const popoverPlacement = computed(() => popoverPlacementRaw.value as GlassPlacement)
+const popoverCode = computed(
+  () => `<GlassPopover placement="${popoverPlacementRaw.value}">
+  <template #label>opções</template>
+  <p>o painel se inverte sozinho quando não cabe na janela.</p>
+</GlassPopover>`,
+)
+
 /* GlassModal */
 const modalOpen = ref(false)
 const modalCode = `<GlassButton @click="aberto = true">abrir modal</GlassButton>
@@ -146,7 +281,7 @@ const modalCode = `<GlassButton @click="aberto = true">abrir modal</GlassButton>
 </GlassModal>`
 
 /* GlassTerminal */
-const terminalRun = ref(0)
+const terminalRef = ref<{ replay: () => void } | null>(null)
 const terminalScanlines = ref(true)
 const terminalSpeed = ref(26)
 const terminalLines = [
@@ -163,20 +298,6 @@ const terminalCode = computed(
   @done="aoTerminar"
 />`,
 )
-
-/* Self advancing example for the progress bar */
-const autoValue = ref(0)
-let timer: ReturnType<typeof setInterval> | undefined
-
-onMounted(() => {
-  timer = setInterval(() => {
-    autoValue.value = autoValue.value >= 100 ? 0 : autoValue.value + 2
-  }, 120)
-})
-
-onBeforeUnmount(() => {
-  if (timer) clearInterval(timer)
-})
 </script>
 
 <template>
@@ -191,10 +312,16 @@ onBeforeUnmount(() => {
     <ShowcaseCard
       id="provider"
       name="GlassProvider"
-      description="Envolve a aplicação, injeta o filtro de refração e liga o motor de luz. Estes controles valem para a página inteira, então dá para ver o efeito de cada opção em todos os componentes ao mesmo tempo."
+      description="Envolve a aplicação, injeta o filtro de refração, escolhe o tema e liga o motor de luz. Estes controles valem para a página inteira, então dá para ver o efeito de cada opção em todos os componentes ao mesmo tempo."
       :code="providerCode"
     >
       <template #controls>
+        <SegmentedControl
+          label="theme"
+          :model-value="theme"
+          :options="['dark', 'light', 'auto']"
+          @update:model-value="emit('update:theme', $event)"
+        />
         <SegmentedControl
           label="refraction"
           :model-value="refraction"
@@ -208,9 +335,11 @@ onBeforeUnmount(() => {
         />
       </template>
       <p class="note">
-        Modo atual: <strong>{{ refractionMode }}</strong
+        Refração: <strong>{{ refractionMode }}</strong
         >. Com <code>off</code> o vidro passa a usar apenas blur, que é o mesmo resultado visto no
-        Firefox e no Safari.
+        Firefox e no Safari. Em <code>theme="light"</code> o brilho branco quase some, e a direção
+        da luz passa a ser lida pelo sombreamento da borda oposta. Com <code>auto</code> o provider
+        segue a preferência do sistema.
       </p>
     </ShowcaseCard>
 
@@ -243,6 +372,47 @@ onBeforeUnmount(() => {
     </ShowcaseCard>
 
     <ShowcaseCard
+      id="card"
+      name="GlassCard"
+      description="Painel com cabeçalho, corpo e rodapé prontos. É o GlassSurface com uma estrutura montada, e vira um botão inteiro pela propriedade as."
+      :code="cardCode"
+    >
+      <template #controls>
+        <SegmentedControl
+          v-model="cardElevationRaw"
+          label="elevation"
+          :options="['0', '1', '2', '3']"
+        />
+        <ToggleControl v-model="cardInteractive" label="interactive" />
+      </template>
+      <GlassCard
+        class="card-demo"
+        title="build"
+        :elevation="cardElevation"
+        :interactive="cardInteractive"
+      >
+        <p style="margin: 0">saída do último deploy, concluída em 42 segundos.</p>
+        <template #footer>
+          <GlassButton size="sm" variant="ghost">detalhes</GlassButton>
+        </template>
+      </GlassCard>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="divider"
+      name="GlassDivider"
+      description="Régua de separação. O rótulo abre um vão no meio da linha, no lugar de flutuar sobre ela."
+      :code="dividerCode"
+    >
+      <template #controls>
+        <ToggleControl v-model="dividerLabelled" label="label" />
+      </template>
+      <div class="divider-demo">
+        <GlassDivider :label="dividerLabelled ? 'ou' : ''" />
+      </div>
+    </ShowcaseCard>
+
+    <ShowcaseCard
       id="button"
       name="GlassButton"
       description="Botão em duas variantes. O estado de carregamento mostra um indicador em braille e bloqueia o clique."
@@ -266,10 +436,27 @@ onBeforeUnmount(() => {
       >
         executar
       </GlassButton>
-      <span class="divider" />
-      <GlassButton variant="ghost" size="sm">sm</GlassButton>
-      <GlassButton variant="ghost">md</GlassButton>
-      <GlassButton variant="ghost" size="lg">lg</GlassButton>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="field"
+      name="GlassField"
+      description="Rótulo, descrição e erro em volta de um controle. O campo é o dono do id, do aria-describedby e do estado inválido, e o controle dentro dele só lê essa informação."
+      :code="fieldCode"
+    >
+      <template #controls>
+        <ToggleControl v-model="fieldWithError" label="error" />
+        <ToggleControl v-model="fieldRequired" label="required" />
+      </template>
+      <GlassField
+        class="field-demo"
+        label="e-mail"
+        description="usamos apenas para o login"
+        :error="fieldWithError ? 'informe um endereço válido' : ''"
+        :required="fieldRequired"
+      >
+        <GlassInput v-model="fieldValue" type="email" placeholder="voce@exemplo.com" />
+      </GlassField>
     </ShowcaseCard>
 
     <ShowcaseCard
@@ -297,6 +484,43 @@ onBeforeUnmount(() => {
     </ShowcaseCard>
 
     <ShowcaseCard
+      id="textarea"
+      name="GlassTextarea"
+      description="Campo de várias linhas. Com autosize ele cresce junto com o conteúdo em vez de criar barra de rolagem."
+      :code="textareaCode"
+    >
+      <template #controls>
+        <ToggleControl v-model="textareaAutosize" label="autosize" />
+      </template>
+      <GlassTextarea
+        v-model="textareaValue"
+        class="textarea-demo"
+        :rows="2"
+        :autosize="textareaAutosize"
+        placeholder="uma linha sobre você"
+      />
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="checkbox"
+      name="GlassCheckbox"
+      description="Caixa de seleção com o terceiro estado. Enquanto indeterminate estiver ligado, a marca vira um traço e o aria-checked reporta mixed."
+      :code="checkboxCode"
+    >
+      <template #controls>
+        <SegmentedControl v-model="checkboxSizeRaw" label="size" :options="SIZES" />
+        <ToggleControl v-model="checkboxIndeterminate" label="indeterminate" />
+      </template>
+      <GlassCheckbox
+        v-model="checkboxOn"
+        :size="checkboxSize"
+        :indeterminate="checkboxIndeterminate"
+      >
+        aceito os termos
+      </GlassCheckbox>
+    </ShowcaseCard>
+
+    <ShowcaseCard
       id="switch"
       name="GlassSwitch"
       description="Interruptor construído sobre um botão nativo com role de switch, então teclado e leitores de tela funcionam sem ajuste extra."
@@ -304,10 +528,11 @@ onBeforeUnmount(() => {
     >
       <template #controls>
         <SegmentedControl v-model="switchSizeRaw" label="size" :options="SIZES" />
+        <ToggleControl v-model="switchDisabled" label="disabled" />
       </template>
-      <GlassSwitch v-model="switchA" :size="switchSize">rastrear ponteiro</GlassSwitch>
-      <GlassSwitch v-model="switchB" :size="switchSize">modo verboso</GlassSwitch>
-      <GlassSwitch :model-value="false" disabled>desativado</GlassSwitch>
+      <GlassSwitch v-model="switchOn" :size="switchSize" :disabled="switchDisabled">
+        rastrear ponteiro
+      </GlassSwitch>
     </ShowcaseCard>
 
     <ShowcaseCard
@@ -317,9 +542,7 @@ onBeforeUnmount(() => {
       :code="kbdCode"
     >
       <p class="kbd-demo">
-        pressione <GlassKbd>Ctrl</GlassKbd> + <GlassKbd>K</GlassKbd> para buscar,
-        <GlassKbd>Esc</GlassKbd> para fechar e <GlassKbd>Shift</GlassKbd> +
-        <GlassKbd>Tab</GlassKbd> para voltar
+        pressione <GlassKbd>Ctrl</GlassKbd> + <GlassKbd>K</GlassKbd> para buscar
       </p>
     </ShowcaseCard>
 
@@ -339,11 +562,46 @@ onBeforeUnmount(() => {
         <ToggleControl v-model="badgePulse" label="pulse" />
       </template>
       <GlassBadge :variant="badgeVariant" :dot="badgeDot" :pulse="badgePulse">estável</GlassBadge>
-      <span class="divider" />
-      <GlassBadge>neutral</GlassBadge>
-      <GlassBadge variant="outline">outline</GlassBadge>
-      <GlassBadge variant="solid" :dot="false">solid</GlassBadge>
-      <GlassBadge pulse>gravando</GlassBadge>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="avatar"
+      name="GlassAvatar"
+      description="Retrato com iniciais de reserva quando não há imagem ou quando ela falha. A imagem que houver é dessaturada, porque a biblioteca inteira é monocromática."
+      :code="avatarCode"
+    >
+      <template #controls>
+        <SegmentedControl v-model="avatarSizeRaw" label="size" :options="SIZES" />
+        <ToggleControl v-model="avatarSquare" label="square" />
+      </template>
+      <GlassAvatar name="Vitor Zanetti" :size="avatarSize" :square="avatarSquare" />
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="spinner"
+      name="GlassSpinner"
+      description="Indicador de carregamento em braille. É o mesmo que o GlassButton usa por dentro, e para de girar quando o usuário pede menos movimento."
+      :code="spinnerCode"
+    >
+      <template #controls>
+        <SegmentedControl v-model="spinnerSizeRaw" label="size" :options="SIZES" />
+        <RangeControl v-model="spinnerSpeed" label="speed" :min="40" :max="200" />
+      </template>
+      <GlassSpinner :size="spinnerSize" :speed="spinnerSpeed" label="carregando" />
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="skeleton"
+      name="GlassSkeleton"
+      description="Espaço reservado enquanto o conteúdo carrega. A última linha sai mais curta para ler como parágrafo, e o brilho corre na direção da luz global."
+      :code="skeletonCode"
+    >
+      <template #controls>
+        <RangeControl v-model="skeletonLines" label="lines" :min="1" :max="4" />
+      </template>
+      <div class="skeleton-demo">
+        <GlassSkeleton :lines="skeletonLines" />
+      </div>
     </ShowcaseCard>
 
     <ShowcaseCard
@@ -365,9 +623,67 @@ onBeforeUnmount(() => {
           :show-value="progressShowValue"
           :indeterminate="progressIndeterminate"
         />
-        <GlassProgress :value="autoValue" mode="ascii" show-value />
-        <GlassProgress :value="autoValue" show-value />
       </div>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="alert"
+      name="GlassAlert"
+      description="Aviso em quatro pesos. A paleta não tem cor, então a variante se lê pela régua da esquerda e por um glifo, e o error é o único anunciado de forma assertiva."
+      :code="alertCode"
+    >
+      <template #controls>
+        <SegmentedControl
+          v-model="alertVariantRaw"
+          label="variant"
+          :options="['info', 'success', 'warn', 'error']"
+        />
+        <ToggleControl v-model="alertClosable" label="closable" />
+      </template>
+      <div class="alert-demo">
+        <GlassAlert :variant="alertVariant" title="build lenta" :closable="alertClosable">
+          a etapa de tipos levou 42 segundos.
+        </GlassAlert>
+      </div>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="tooltip"
+      name="GlassTooltip"
+      description="Dica flutuante posicionada sem dependência externa. Ela se inverte quando não cabe do lado pedido e desliza para não vazar da janela."
+      :code="tooltipCode"
+    >
+      <template #controls>
+        <SegmentedControl
+          v-model="tooltipPlacementRaw"
+          label="placement"
+          :options="['top', 'bottom', 'left', 'right']"
+        />
+      </template>
+      <GlassTooltip content="copiado para a área de transferência" :placement="tooltipPlacement">
+        <GlassButton size="sm">copiar</GlassButton>
+      </GlassTooltip>
+    </ShowcaseCard>
+
+    <ShowcaseCard
+      id="popover"
+      name="GlassPopover"
+      description="Painel flutuante ancorado no gatilho. Fecha com Esc e com clique fora, devolve o foco ao fechar e some se o gatilho sair de um contêiner com rolagem."
+      :code="popoverCode"
+    >
+      <template #controls>
+        <SegmentedControl
+          v-model="popoverPlacementRaw"
+          label="placement"
+          :options="['bottom-start', 'bottom-end', 'top', 'right']"
+        />
+      </template>
+      <GlassPopover :placement="popoverPlacement">
+        <template #label>
+          <GlassButton size="sm" variant="ghost">opções</GlassButton>
+        </template>
+        <p style="margin: 0">O painel se inverte sozinho quando encosta na borda da janela.</p>
+      </GlassPopover>
     </ShowcaseCard>
 
     <ShowcaseCard
@@ -402,10 +718,10 @@ onBeforeUnmount(() => {
       <template #controls>
         <RangeControl v-model="terminalSpeed" label="speed" :min="8" :max="90" />
         <ToggleControl v-model="terminalScanlines" label="scanlines" />
-        <GlassButton size="sm" variant="ghost" @click="terminalRun++">repetir</GlassButton>
+        <GlassButton size="sm" variant="ghost" @click="terminalRef?.replay()">repetir</GlassButton>
       </template>
       <GlassTerminal
-        :key="terminalRun"
+        ref="terminalRef"
         class="terminal-demo"
         :lines="terminalLines"
         :speed="terminalSpeed"
@@ -430,25 +746,50 @@ onBeforeUnmount(() => {
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: #f5f5f5;
+  color: var(--gt-fg);
 }
 
 .surface-demo__text {
   margin: 0;
   font-size: 13px;
   line-height: 1.6;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
+}
+
+.card-demo {
+  max-width: 300px;
+}
+
+.divider-demo {
+  width: 100%;
+  max-width: 340px;
+}
+
+.field-demo {
+  width: 100%;
+  max-width: 340px;
 }
 
 .input-demo {
   min-width: 260px;
 }
 
+.textarea-demo {
+  width: 100%;
+  max-width: 340px;
+}
+
 .kbd-demo {
   margin: 0;
   font-size: 13px;
   line-height: 2.2;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
+}
+
+.skeleton-demo,
+.alert-demo {
+  width: 100%;
+  max-width: 420px;
 }
 
 .progress-demo {
@@ -464,16 +805,10 @@ onBeforeUnmount(() => {
   max-width: 460px;
 }
 
-.divider {
-  width: 1px;
-  height: 24px;
-  background: rgb(255 255 255 / 0.12);
-}
-
 .note {
   margin: 0;
   font-size: 12px;
   line-height: 1.7;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
 }
 </style>
