@@ -1,26 +1,31 @@
 <script setup lang="ts">
+import { useGlassSurface } from '../composables/useGlassSurface'
 import type { GlassSurfaceProps } from '../types'
 
-withDefaults(defineProps<GlassSurfaceProps>(), {
+const props = withDefaults(defineProps<GlassSurfaceProps>(), {
   elevation: 1,
   interactive: false,
   radius: 'md',
   as: 'div',
 })
+
+const { surfaceAttrs } = useGlassSurface({
+  interactive: () => props.interactive,
+  elevation: () => props.elevation,
+  radius: () => props.radius,
+})
 </script>
 
 <template>
-  <component
-    :is="as"
-    class="gt-surface gt-glass"
-    :class="[`gt-elev-${elevation}`, `gt-r-${radius}`, { 'gt-glass--interactive': interactive }]"
-  >
+  <component :is="as" class="gt-surface" v-bind="surfaceAttrs">
     <slot />
   </component>
 </template>
 
 <style>
-.gt-surface {
-  padding: 20px;
+@layer glasstora {
+  .gt-surface {
+    padding: 20px;
+  }
 }
 </style>
