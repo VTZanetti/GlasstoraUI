@@ -32,13 +32,13 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
 }
 
 .segmented__options {
   display: inline-flex;
   padding: 2px;
-  border: 1px solid rgb(255 255 255 / 0.1);
+  border: 1px solid rgb(var(--gt-line-tint) / 0.1);
   border-radius: 8px;
 }
 
@@ -46,7 +46,7 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
   padding: 4px 10px;
   font-family: inherit;
   font-size: 12px;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
   background: transparent;
   border: none;
   border-radius: 6px;
@@ -57,11 +57,11 @@ defineEmits<{ 'update:modelValue': [value: string] }>()
 }
 
 .segmented__option:hover {
-  color: #cfcfcf;
+  color: var(--gt-gray-8);
 }
 
 .segmented__option--active {
-  color: #050505;
-  background: #f5f5f5;
+  color: var(--gt-bg);
+  background: var(--gt-fg);
 }
 </style>

@@ -81,7 +81,7 @@ const ASCII_ART = Array.from({ length: 44 }, (_, i) =>
   padding: 20px;
   font-size: 12px;
   line-height: 1.5;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
   user-select: none;
   white-space: pre;
   overflow: hidden;
@@ -102,14 +102,14 @@ const ASCII_ART = Array.from({ length: 44 }, (_, i) =>
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #f5f5f5;
+  color: var(--gt-fg);
 }
 
 .lab__text {
   margin: 0;
   font-size: 13px;
   line-height: 1.6;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
 }
 
 .lab__readout {

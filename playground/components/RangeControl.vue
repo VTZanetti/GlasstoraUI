@@ -33,14 +33,14 @@ function onInput(event: Event) {
   font-size: 11px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
 }
 
 .range__input {
   width: 140px;
   height: 2px;
   appearance: none;
-  background: rgb(255 255 255 / 0.2);
+  background: rgb(var(--gt-line-tint) / 0.2);
   border-radius: 999px;
   outline: none;
   cursor: pointer;
@@ -50,7 +50,7 @@ function onInput(event: Event) {
   appearance: none;
   width: 12px;
   height: 12px;
-  background: #f5f5f5;
+  background: var(--gt-fg);
   border-radius: 3px;
   cursor: pointer;
 }
@@ -58,21 +58,21 @@ function onInput(event: Event) {
 .range__input::-moz-range-thumb {
   width: 12px;
   height: 12px;
-  background: #f5f5f5;
+  background: var(--gt-fg);
   border: none;
   border-radius: 3px;
   cursor: pointer;
 }
 
 .range__input:focus-visible {
-  outline: 1px solid rgb(255 255 255 / 0.75);
+  outline: 1px solid rgb(var(--gt-line-tint) / 0.75);
   outline-offset: 4px;
 }
 
 .range__value {
   min-width: 3ch;
   font-size: 12px;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
   text-align: right;
 }
 </style>

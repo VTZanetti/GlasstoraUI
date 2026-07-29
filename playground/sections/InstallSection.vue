@@ -67,12 +67,12 @@ ${scriptClose}
 .steps__label {
   margin: 0 0 10px;
   font-size: 13px;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
   counter-increment: step;
 }
 
 .steps__label::before {
   content: counter(step) '. ';
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
 }
 </style>
