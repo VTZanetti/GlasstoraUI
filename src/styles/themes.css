@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Light theme.
+
+   Opt in by putting data-gt-theme="light" on <html>, or let GlassProvider do
+   it with theme="auto". The provider resolves the preference in JavaScript and
+   writes the attribute, so there is a single set of light values here instead
+   of one copy for the attribute and another inside a media query.
+
+   The interesting part is not the palette. A white specular highlight is
+   almost invisible over a light background, so direction on a light surface
+   has to be read as shading rather than as glare: the highlight drops and
+   --gt-rim-shade-alpha takes over, darkening the edge that faces away from the
+   light. That third gradient in the ring exists for this theme.
+   ========================================================================== */
+@layer glasstora {
+  [data-gt-theme='light'] {
+    --gt-bg: var(--gt-gray-9);
+    --gt-fg: var(--gt-gray-1);
+    --gt-fg-muted: var(--gt-gray-5);
+    --gt-fg-faint: var(--gt-gray-6);
+
+    /* Glass over a light backdrop needs to be much more opaque, otherwise the
+       page shows straight through and nothing reads as a panel. */
+    --gt-glass-tint: 255 255 255;
+    --gt-glass-alpha: 0.5;
+    --gt-glass-alpha-hover: 0.66;
+    --gt-border-alpha: 0.12;
+
+    /* Hairlines, fills and the focus ring flip from white to black. */
+    --gt-line-tint: 0 0 0;
+    --gt-line-alpha: 0.1;
+    --gt-line-strong-alpha: 0.22;
+    --gt-fill-alpha: 0.05;
+    --gt-fill-strong-alpha: 0.12;
+    --gt-focus-alpha: 0.7;
+
+    /* Highlight down, shading up. */
+    --gt-specular-intensity: 0.5;
+    --gt-ring-specular: 0.7;
+    --gt-rim-alpha: 0.7;
+    --gt-rim-shade-alpha: 0.16;
+    --gt-shade-tint: 0 0 0;
+
+    --gt-grain-opacity: 0.035;
+    --gt-scanline-opacity: 0.03;
+
+    --gt-elev-1: 0 4px 16px rgb(0 0 0 / 0.1);
+    --gt-elev-2: 0 8px 32px rgb(0 0 0 / 0.14);
+    --gt-elev-3: 0 16px 48px rgb(0 0 0 / 0.2);
+  }
+
+  /* The grain blends by overlay, which lightens over a light surface instead
+     of adding tooth to it. Multiply keeps it reading as texture. */
+  [data-gt-theme='light'] .gt-glass::before {
+    mix-blend-mode: multiply;
+  }
+
+  /* Layer 0 is the no backdrop-filter fallback, and its hardcoded dark solid
+     belongs to the dark theme only. */
+  [data-gt-theme='light'] .gt-glass {
+    background-color: rgb(255 255 255 / 0.86);
+  }
+
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    [data-gt-theme='light'] .gt-glass {
+      background-color: rgb(var(--gt-glass-tint) / var(--gt-glass-alpha));
+      -webkit-backdrop-filter: blur(var(--gt-blur)) brightness(1.04) contrast(1.02);
+      backdrop-filter: blur(var(--gt-blur)) brightness(1.04) contrast(1.02);
+    }
+  }
+
+  [data-gt-theme='light'] html[data-gt-refract] .gt-glass,
+  html[data-gt-refract][data-gt-theme='light'] .gt-glass {
+    backdrop-filter: url(#gt-refraction) blur(var(--gt-blur)) brightness(1.04) contrast(1.02);
+  }
+
+  /* Component tuning. The alphas the variants pick are calibrated against a
+     near black page, and the same numbers over a light one leave a solid
+     button looking like a ghost one. */
+  [data-gt-theme='light'] .gt-button--solid {
+    --gt-glass-alpha: 0.62;
+    --gt-glass-alpha-hover: 0.8;
+    --gt-border-alpha: 0.16;
+  }
+
+  [data-gt-theme='light'] .gt-button--ghost {
+    --gt-glass-alpha: 0.12;
+    --gt-glass-alpha-hover: 0.42;
+    --gt-border-alpha: 0.08;
+  }
+
+  [data-gt-theme='light'] .gt-input {
+    --gt-glass-alpha: 0.7;
+  }
+
+  [data-gt-theme='light'] .gt-switch__track {
+    --gt-glass-alpha: 0.14;
+  }
+
+  [data-gt-theme='light'] .gt-switch--on .gt-switch__track {
+    --gt-glass-alpha: 0.55;
+    --gt-border-alpha: 0.24;
+  }
+
+  [data-gt-theme='light'] .gt-switch__thumb {
+    background: var(--gt-gray-6);
+  }
+
+  [data-gt-theme='light'] .gt-switch--on .gt-switch__thumb {
+    background: var(--gt-gray-1);
+  }
+
+  [data-gt-theme='light'] .gt-progress__fill {
+    background: var(--gt-gray-1);
+  }
+
+  [data-gt-theme='light'] .gt-modal__overlay {
+    background: rgb(0 0 0 / 0.28);
+  }
+
+  [data-gt-theme='light'] .gt-terminal,
+  [data-gt-theme='light'] .gt-modal__panel {
+    --gt-glass-alpha: 0.74;
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    [data-gt-theme='light'] .gt-glass {
+      background-color: var(--gt-gray-8) !important;
+    }
+  }
+}

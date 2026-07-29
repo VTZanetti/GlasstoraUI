@@ -64,21 +64,21 @@ onBeforeUnmount(() => observer?.disconnect())
   display: block;
   padding: 5px 0 5px 12px;
   font-size: 12px;
-  color: #6b6b6b;
+  color: var(--gt-fg-faint);
   text-decoration: none;
-  border-left: 1px solid rgb(255 255 255 / 0.1);
+  border-left: 1px solid rgb(var(--gt-line-tint) / 0.1);
   transition:
     color 120ms ease,
     border-color 120ms ease;
 }
 
 .nav__link:hover {
-  color: #cfcfcf;
+  color: var(--gt-gray-8);
 }
 
 .nav__link--active {
-  color: #f5f5f5;
-  border-left-color: #f5f5f5;
+  color: var(--gt-fg);
+  border-left-color: var(--gt-fg);
 }
 
 @media (max-width: 900px) {

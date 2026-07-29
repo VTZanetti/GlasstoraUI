@@ -41,7 +41,7 @@ defineProps<{ id: string; name: string; description: string; code: string }>()
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: #f5f5f5;
+  color: var(--gt-fg);
 }
 
 .showcase__description {
@@ -49,7 +49,7 @@ defineProps<{ id: string; name: string; description: string; code: string }>()
   max-width: 62ch;
   font-size: 13px;
   line-height: 1.7;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
 }
 
 .showcase__controls {
@@ -59,7 +59,7 @@ defineProps<{ id: string; name: string; description: string; code: string }>()
   align-items: center;
   padding: 12px 16px;
   margin-bottom: 12px;
-  border: 1px dashed rgb(255 255 255 / 0.1);
+  border: 1px dashed rgb(var(--gt-line-tint) / 0.1);
   border-radius: 10px;
 }
 
@@ -73,7 +73,7 @@ defineProps<{ id: string; name: string; description: string; code: string }>()
   min-height: 96px;
   padding: 28px;
   margin-bottom: 12px;
-  border: 1px solid rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(var(--gt-line-tint) / 0.06);
   border-radius: 10px;
 }
 </style>

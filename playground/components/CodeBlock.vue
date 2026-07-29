@@ -36,9 +36,9 @@ onBeforeUnmount(() => clearTimeout(timer))
 <style scoped>
 .code {
   position: relative;
-  border: 1px solid rgb(255 255 255 / 0.08);
+  border: 1px solid rgb(var(--gt-line-tint) / 0.08);
   border-radius: 10px;
-  background: rgb(255 255 255 / 0.02);
+  background: rgb(var(--gt-line-tint) / 0.02);
 }
 
 .code__copy {
@@ -49,16 +49,18 @@ onBeforeUnmount(() => clearTimeout(timer))
   font-family: inherit;
   font-size: 11px;
   letter-spacing: 0.08em;
-  color: #6b6b6b;
-  background: rgb(5 5 5 / 0.7);
-  border: 1px solid rgb(255 255 255 / 0.12);
+  color: var(--gt-fg-faint);
+  /* Sits over scrolling code, so it needs the page colour behind it rather
+     than a translucent tint that the text would show through. */
+  background: var(--gt-bg);
+  border: 1px solid rgb(var(--gt-line-tint) / 0.12);
   border-radius: 6px;
   cursor: pointer;
   transition: color 120ms ease;
 }
 
 .code__copy:hover {
-  color: #f5f5f5;
+  color: var(--gt-fg);
 }
 
 .code__body {
@@ -67,7 +69,7 @@ onBeforeUnmount(() => clearTimeout(timer))
   overflow-x: auto;
   font-size: 12px;
   line-height: 1.7;
-  color: #9e9e9e;
+  color: var(--gt-fg-muted);
   white-space: pre;
 }
 </style>

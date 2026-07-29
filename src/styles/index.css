@@ -1,3 +1,5 @@
+@import './props.css';
 @import './tokens.css';
 @import './base.css';
 @import './effects.css';
+@import './themes.css';

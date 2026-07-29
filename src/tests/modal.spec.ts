@@ -58,16 +58,30 @@ describe('GlassModal', () => {
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 
-  it('closes on overlay click and honours closeOnOverlay', async () => {
+  it('closes on an outside press and honours closeOnOverlay', async () => {
+    // Pointerdown rather than click: a click that starts inside the panel and
+    // ends past its edge must not dismiss, so the dismissable listens to where
+    // the press began.
+    const press = (el: Element) =>
+      el.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
+
     wrapper = mountModal()
     await nextTick()
-    ;(document.body.querySelector('.gt-modal__overlay') as HTMLElement).click()
+    press(document.body.querySelector('.gt-modal__overlay') as HTMLElement)
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false])
 
     wrapper.unmount()
     wrapper = mountModal({ closeOnOverlay: false })
     await nextTick()
-    ;(document.body.querySelector('.gt-modal__overlay') as HTMLElement).click()
+    press(document.body.querySelector('.gt-modal__overlay') as HTMLElement)
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined()
+  })
+
+  it('keeps a press inside the panel from dismissing', async () => {
+    wrapper = mountModal()
+    await nextTick()
+    const panel = document.body.querySelector('[role="dialog"]') as HTMLElement
+    panel.dispatchEvent(new Event('pointerdown', { bubbles: true, composed: true }))
     expect(wrapper.emitted('update:modelValue')).toBeUndefined()
   })
 
