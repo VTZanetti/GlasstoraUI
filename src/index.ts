@@ -32,6 +32,7 @@ export { default as GlassAlert } from './components/GlassAlert.vue'
 export { default as GlassTooltip } from './components/GlassTooltip.vue'
 export { default as GlassPopover } from './components/GlassPopover.vue'
 export { default as GlassModal } from './components/GlassModal.vue'
+export { default as GlassDrawer } from './components/GlassDrawer.vue'
 export { default as GlassTerminal } from './components/GlassTerminal.vue'
 
 export { useGlassLight } from './composables/useGlassLight'
