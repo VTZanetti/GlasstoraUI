@@ -15,6 +15,8 @@ import GlassSwitch from './components/GlassSwitch.vue'
 import GlassRadio from './components/GlassRadio.vue'
 import GlassRadioGroup from './components/GlassRadioGroup.vue'
 import GlassSlider from './components/GlassSlider.vue'
+import GlassTabs from './components/GlassTabs.vue'
+import GlassTabPanel from './components/GlassTabPanel.vue'
 import GlassKbd from './components/GlassKbd.vue'
 import GlassBadge from './components/GlassBadge.vue'
 import GlassAvatar from './components/GlassAvatar.vue'
@@ -42,6 +44,8 @@ export const components: Record<string, Component> = {
   GlassRadio,
   GlassRadioGroup,
   GlassSlider,
+  GlassTabs,
+  GlassTabPanel,
   GlassKbd,
   GlassBadge,
   GlassAvatar,
