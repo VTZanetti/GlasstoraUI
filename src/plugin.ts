@@ -20,6 +20,7 @@ import GlassTabPanel from './components/GlassTabPanel.vue'
 import GlassAccordion from './components/GlassAccordion.vue'
 import GlassBreadcrumb from './components/GlassBreadcrumb.vue'
 import GlassPagination from './components/GlassPagination.vue'
+import GlassTable from './components/GlassTable.vue'
 import GlassKbd from './components/GlassKbd.vue'
 import GlassBadge from './components/GlassBadge.vue'
 import GlassAvatar from './components/GlassAvatar.vue'
@@ -52,6 +53,7 @@ export const components: Record<string, Component> = {
   GlassAccordion,
   GlassBreadcrumb,
   GlassPagination,
+  GlassTable,
   GlassKbd,
   GlassBadge,
   GlassAvatar,
