@@ -1,0 +1,82 @@
+@layer glasstora {
+  .gt-pagination {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 4px;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg-muted);
+  }
+
+  .gt-pagination--sm {
+    font-size: var(--gt-text-sm);
+  }
+
+  .gt-pagination--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  /* Sized in em so one font-size moves the whole strip, and every cell stays
+     square whatever the page number is. */
+  .gt-pagination__page,
+  .gt-pagination__nav,
+  .gt-pagination__gap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2em;
+    height: 2em;
+    padding: 0 0.4em;
+  }
+
+  .gt-pagination__page,
+  .gt-pagination__nav {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--gt-radius-sm);
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    transition:
+      background-color var(--gt-dur-1) var(--gt-ease),
+      border-color var(--gt-dur-1) var(--gt-ease),
+      color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-pagination__page:hover:not(:disabled),
+  .gt-pagination__nav:hover:not(:disabled) {
+    background-color: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    color: var(--gt-fg);
+  }
+
+  .gt-pagination__page--current {
+    background-color: rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha));
+    border-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+    color: var(--gt-fg);
+  }
+
+  .gt-pagination__gap {
+    color: var(--gt-fg-faint);
+    user-select: none;
+  }
+
+  .gt-pagination__page:disabled,
+  .gt-pagination__nav:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gt-pagination__page:focus-visible,
+  .gt-pagination__nav:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-pagination__page,
+    .gt-pagination__nav {
+      transition: none;
+    }
+  }
+}

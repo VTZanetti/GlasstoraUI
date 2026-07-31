@@ -1,0 +1,12 @@
+@layer glasstora {
+  .gt-tabs__panel {
+    font-family: var(--gt-font-mono);
+    font-size: inherit;
+    color: var(--gt-fg-muted);
+  }
+
+  .gt-tabs__panel:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+}

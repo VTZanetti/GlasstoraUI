@@ -1,0 +1,82 @@
+@layer glasstora {
+  .gt-input {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--gt-font-mono);
+    color: var(--gt-fg);
+    border-radius: var(--gt-radius-sm);
+    cursor: text;
+  }
+
+  .gt-input--sm {
+    height: 28px;
+    padding: 0 10px;
+    font-size: var(--gt-text-sm);
+  }
+
+  .gt-input--md {
+    height: 36px;
+    padding: 0 12px;
+    font-size: var(--gt-text-md);
+  }
+
+  .gt-input--lg {
+    height: 44px;
+    padding: 0 14px;
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-input__prompt {
+    color: var(--gt-fg-faint);
+    user-select: none;
+  }
+
+  .gt-input__box {
+    position: relative;
+    display: inline-flex;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .gt-input__field {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+  }
+
+  .gt-input__field::placeholder {
+    color: var(--gt-fg-faint);
+  }
+
+  .gt-input--block-caret .gt-input__field {
+    caret-color: transparent;
+  }
+
+  .gt-input__caret {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--gt-fg);
+    animation: gt-blink var(--gt-caret-blink) steps(1) infinite;
+  }
+
+  /* The invalid state is monochrome, so it uses a dashed border instead of red. */
+  .gt-input--invalid {
+    --gt-border-alpha: 0.4;
+    border-style: dashed;
+  }
+
+  .gt-input--disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}

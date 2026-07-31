@@ -1,0 +1,186 @@
+@layer glasstora {
+  /* The same z-index as the modal, on purpose. A drawer and a modal open at
+     once stack in mount order, and the useDismissable stack is what gives
+     Escape and the outside press to whichever one is on top. Raising one above
+     the other here would only decide which is painted first, not which one
+     answers the keyboard. */
+  .gt-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    font-family: var(--gt-font-mono);
+  }
+
+  .gt-drawer__overlay {
+    position: absolute;
+    inset: 0;
+    /* The scrim is the shade token rather than a literal, so a theme moves it
+       with the rest of the palette. */
+    background: rgb(var(--gt-shade-tint) / 0.6);
+  }
+
+  /* The panel itself never scrolls. Its ::after ring sits 1px outside the box,
+     which a scroll container would count as overflow and grow scrollbars for,
+     besides clipping the ring. The body below is the scroll area instead. */
+  .gt-drawer__panel {
+    position: absolute;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    max-height: 100%;
+    color: var(--gt-fg);
+    border-radius: 0;
+    outline: none;
+  }
+
+  /* --gt-drawer-size is set on the root by the size prop. It reads as width on
+     the sides and as height on the top and bottom; the other dimension is
+     always the whole edge. */
+  .gt-drawer--left .gt-drawer__panel,
+  .gt-drawer--right .gt-drawer__panel {
+    top: 0;
+    bottom: 0;
+    width: var(--gt-drawer-size);
+  }
+
+  .gt-drawer--top .gt-drawer__panel,
+  .gt-drawer--bottom .gt-drawer__panel {
+    right: 0;
+    left: 0;
+    height: var(--gt-drawer-size);
+  }
+
+  /* Only the edge that faces the page is rounded. The sides flush with the
+     viewport have nothing to round against. */
+  .gt-drawer--left .gt-drawer__panel {
+    left: 0;
+    border-top-right-radius: var(--gt-radius-lg);
+    border-bottom-right-radius: var(--gt-radius-lg);
+  }
+
+  .gt-drawer--right .gt-drawer__panel {
+    right: 0;
+    border-top-left-radius: var(--gt-radius-lg);
+    border-bottom-left-radius: var(--gt-radius-lg);
+  }
+
+  .gt-drawer--top .gt-drawer__panel {
+    top: 0;
+    border-bottom-right-radius: var(--gt-radius-lg);
+    border-bottom-left-radius: var(--gt-radius-lg);
+  }
+
+  .gt-drawer--bottom .gt-drawer__panel {
+    bottom: 0;
+    border-top-left-radius: var(--gt-radius-lg);
+    border-top-right-radius: var(--gt-radius-lg);
+  }
+
+  .gt-drawer__header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px 0;
+  }
+
+  .gt-drawer__title {
+    margin: 0;
+    font-size: var(--gt-text-lg);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .gt-drawer__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: transparent;
+    border: 1px solid rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha));
+    border-radius: var(--gt-radius-sm);
+    color: var(--gt-fg-muted);
+    font-family: inherit;
+    font-size: var(--gt-text-sm);
+    cursor: pointer;
+    transition: color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-drawer__close:hover {
+    color: var(--gt-fg);
+  }
+
+  .gt-drawer__close:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-drawer__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden auto;
+    padding: 16px 20px;
+    color: var(--gt-fg-muted);
+    line-height: 1.7;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha)) transparent;
+  }
+
+  .gt-drawer__footer {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 20px 20px;
+  }
+
+  /* Transition. The scrim fades on the root, the panel slides on its own, and
+     the direction it slides from is the side it is attached to. */
+  .gt-drawer-enter-active,
+  .gt-drawer-leave-active {
+    transition: opacity var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-drawer-enter-active .gt-drawer__panel,
+  .gt-drawer-leave-active .gt-drawer__panel {
+    transition: transform var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-drawer-enter-from,
+  .gt-drawer-leave-to {
+    opacity: 0;
+  }
+
+  .gt-drawer--left.gt-drawer-enter-from .gt-drawer__panel,
+  .gt-drawer--left.gt-drawer-leave-to .gt-drawer__panel {
+    transform: translateX(-100%);
+  }
+
+  .gt-drawer--right.gt-drawer-enter-from .gt-drawer__panel,
+  .gt-drawer--right.gt-drawer-leave-to .gt-drawer__panel {
+    transform: translateX(100%);
+  }
+
+  .gt-drawer--top.gt-drawer-enter-from .gt-drawer__panel,
+  .gt-drawer--top.gt-drawer-leave-to .gt-drawer__panel {
+    transform: translateY(-100%);
+  }
+
+  .gt-drawer--bottom.gt-drawer-enter-from .gt-drawer__panel,
+  .gt-drawer--bottom.gt-drawer-leave-to .gt-drawer__panel {
+    transform: translateY(100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-drawer-enter-active,
+    .gt-drawer-leave-active,
+    .gt-drawer-enter-active .gt-drawer__panel,
+    .gt-drawer-leave-active .gt-drawer__panel {
+      transition: none !important;
+    }
+  }
+}

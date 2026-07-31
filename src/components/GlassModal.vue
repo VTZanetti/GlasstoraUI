@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, mergeProps, nextTick, onBeforeUnmount, ref, useAttrs, watch } from 'vue'
 import { trapFocus } from '../internal/focusTrap'
+import { lockScroll } from '../internal/scrollLock'
 import { useGlassId } from '../internal/useId'
 import { useDismissable } from '../composables/useDismissable'
 import { useGlassSurface } from '../composables/useGlassSurface'
@@ -48,9 +49,8 @@ const { surfaceAttrs } = useGlassSurface({
 const attrs = useAttrs()
 const panelAttrs = computed(() => mergeProps(surfaceAttrs.value, attrs))
 let releaseTrap: (() => void) | undefined
+let releaseScroll: (() => void) | undefined
 let prevActive: HTMLElement | null = null
-let prevOverflow = ''
-let prevPaddingRight = ''
 
 function close() {
   emit('update:modelValue', false)
@@ -71,9 +71,9 @@ useDismissable({
 function teardown() {
   releaseTrap?.()
   releaseTrap = undefined
+  releaseScroll?.()
+  releaseScroll = undefined
   if (typeof document === 'undefined') return
-  document.documentElement.style.overflow = prevOverflow
-  document.documentElement.style.paddingRight = prevPaddingRight
   prevActive?.focus?.()
   prevActive = null
 }
@@ -84,15 +84,7 @@ watch(
     if (typeof document === 'undefined') return
     if (open) {
       prevActive = document.activeElement as HTMLElement | null
-      const root = document.documentElement
-      prevOverflow = root.style.overflow
-      prevPaddingRight = root.style.paddingRight
-      // Hiding the page scrollbar hands its width back to the layout and the
-      // whole page shifts. Reserve the same width as padding while locked.
-      // Measured before the lock, since hiding the bar changes clientWidth.
-      const scrollbarGap = window.innerWidth - root.clientWidth
-      if (scrollbarGap > 0) root.style.paddingRight = `${scrollbarGap}px`
-      root.style.overflow = 'hidden'
+      releaseScroll = lockScroll()
       await nextTick()
       if (panelRef.value) {
         releaseTrap = trapFocus(panelRef.value)
@@ -154,123 +146,4 @@ onBeforeUnmount(() => {
   </Teleport>
 </template>
 
-<style>
-@layer glasstora {
-  .gt-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 50;
-    display: grid;
-    place-items: center;
-    padding: 24px;
-    font-family: var(--gt-font-mono);
-  }
-
-  .gt-modal__overlay {
-    position: absolute;
-    inset: 0;
-    background: rgb(0 0 0 / 0.6);
-  }
-
-  /* The panel itself never scrolls. Its ::after ring sits 1px outside the box,
-     which a scroll container would count as overflow and grow scrollbars for,
-     besides clipping the ring. The body below is the scroll area instead. */
-  .gt-modal__panel {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    max-width: 100%;
-    max-height: calc(100vh - 48px);
-    color: var(--gt-fg);
-    border-radius: var(--gt-radius-lg);
-    outline: none;
-  }
-
-  .gt-modal__header {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 20px 0;
-  }
-
-  .gt-modal__title {
-    margin: 0;
-    font-size: var(--gt-text-lg);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-
-  .gt-modal__close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    background: transparent;
-    border: 1px solid rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha));
-    border-radius: var(--gt-radius-sm);
-    color: var(--gt-fg-muted);
-    font-family: inherit;
-    font-size: var(--gt-text-sm);
-    cursor: pointer;
-    transition: color var(--gt-dur-1) var(--gt-ease);
-  }
-
-  .gt-modal__close:hover {
-    color: var(--gt-fg);
-  }
-
-  .gt-modal__body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow: hidden auto;
-    padding: 16px 20px;
-    color: var(--gt-fg-muted);
-    line-height: 1.7;
-    scrollbar-width: thin;
-    scrollbar-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha)) transparent;
-  }
-
-  .gt-modal__footer {
-    display: flex;
-    flex-shrink: 0;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 0 20px 20px;
-  }
-
-  /* Transition */
-  .gt-modal-enter-active,
-  .gt-modal-leave-active {
-    transition: opacity var(--gt-dur-2) var(--gt-ease);
-  }
-
-  .gt-modal-enter-active .gt-modal__panel,
-  .gt-modal-leave-active .gt-modal__panel {
-    transition: transform var(--gt-dur-2) var(--gt-ease);
-  }
-
-  .gt-modal-enter-from,
-  .gt-modal-leave-to {
-    opacity: 0;
-  }
-
-  .gt-modal-enter-from .gt-modal__panel,
-  .gt-modal-leave-to .gt-modal__panel {
-    transform: translateY(8px) scale(0.97);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gt-modal-enter-active,
-    .gt-modal-leave-active,
-    .gt-modal-enter-active .gt-modal__panel,
-    .gt-modal-leave-active .gt-modal__panel {
-      transition: none !important;
-    }
-  }
-}
-</style>
+<style src="./GlassModal.css"></style>

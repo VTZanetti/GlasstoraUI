@@ -55,42 +55,4 @@ const initials = computed(() =>
   </span>
 </template>
 
-<style>
-@layer glasstora {
-  .gt-avatar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    font-family: var(--gt-font-mono);
-    color: var(--gt-fg-muted);
-    letter-spacing: 0.04em;
-    user-select: none;
-  }
-
-  .gt-avatar--sm {
-    width: 24px;
-    height: 24px;
-    font-size: 10px;
-  }
-  .gt-avatar--md {
-    width: 34px;
-    height: 34px;
-    font-size: var(--gt-text-sm);
-  }
-  .gt-avatar--lg {
-    width: 46px;
-    height: 46px;
-    font-size: var(--gt-text-md);
-  }
-
-  .gt-avatar__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Monochrome by design, so a colour photograph does not break the palette. */
-    filter: grayscale(1) contrast(1.05);
-  }
-}
-</style>
+<style src="./GlassAvatar.css"></style>

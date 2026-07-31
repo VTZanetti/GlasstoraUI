@@ -38,9 +38,13 @@ const SWEEP_TICK_MS = 50
 
 const columns = computed(() => Math.max(1, Math.round(props.cols)))
 
+/** Every mode that draws itself cell by cell shares one sweep. */
+const CELL_MODES = ['ascii', 'blocks', 'dots'] as const
+
 const { tick, animated } = useTicker({
   interval: SWEEP_TICK_MS,
-  active: () => props.indeterminate && props.mode === 'ascii',
+  active: () =>
+    props.indeterminate && CELL_MODES.includes(props.mode as (typeof CELL_MODES)[number]),
 })
 
 function determinateBar(cols: number): string {
@@ -74,6 +78,27 @@ function sweepBar(cols: number): string {
 const asciiBar = computed(() =>
   props.indeterminate ? sweepBar(columns.value) : determinateBar(columns.value),
 )
+
+/**
+ * Segment brightness from 0 to 3, the same scale the shade characters use, so
+ * the drawn modes and the written one describe the same bar.
+ */
+const segments = computed<number[]>(() => {
+  const cols = columns.value
+  if (!props.indeterminate) {
+    const filled = Math.min(cols, Math.max(0, Math.round(ratio.value * cols)))
+    return Array.from({ length: cols }, (_, i) => (i < filled ? 3 : 0))
+  }
+  const half = Math.min(6, Math.max(2.5, cols / 5))
+  const phase = animated.value ? ((tick.value * SWEEP_TICK_MS) % SWEEP_MS) / SWEEP_MS : 0.5
+  const head = phase * cols
+  return Array.from({ length: cols }, (_, i) => {
+    const offset = Math.abs(i - head)
+    const distance = Math.min(offset, cols - offset)
+    const level = Math.max(0, 1 - distance / half)
+    return Math.min(3, Math.floor(level * 4))
+  })
+})
 </script>
 
 <template>
@@ -98,6 +123,19 @@ const asciiBar = computed(() =>
         >{{ pct }}%</span
       >
     </template>
+    <template v-else-if="mode === 'blocks' || mode === 'dots'">
+      <span class="gt-progress__cells" aria-hidden="true">
+        <span
+          v-for="(level, index) in segments"
+          :key="index"
+          class="gt-progress__cell"
+          :class="`gt-progress__cell--${level}`"
+        />
+      </span>
+      <span v-if="showValue && !indeterminate" class="gt-progress__value" aria-hidden="true"
+        >{{ pct }}%</span
+      >
+    </template>
     <template v-else>
       <span class="gt-progress__track" v-bind="surfaceAttrs">
         <span class="gt-progress__fill" :style="indeterminate ? undefined : { width: `${pct}%` }" />
@@ -109,70 +147,4 @@ const asciiBar = computed(() =>
   </div>
 </template>
 
-<style>
-@layer glasstora {
-  .gt-progress {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--gt-font-mono);
-    color: var(--gt-fg);
-  }
-
-  .gt-progress__track {
-    flex: 1;
-    display: block;
-    height: 4px;
-    overflow: hidden;
-    border-radius: var(--gt-radius-full);
-  }
-
-  .gt-progress--sm .gt-progress__track {
-    height: 2px;
-  }
-
-  .gt-progress--lg .gt-progress__track {
-    height: 6px;
-  }
-
-  .gt-progress__fill {
-    display: block;
-    height: 100%;
-    background: var(--gt-gray-9);
-    transition: width var(--gt-dur-2) var(--gt-ease);
-  }
-
-  .gt-progress--indeterminate .gt-progress__fill {
-    width: 30%;
-    animation: gt-progress-slide 1.4s var(--gt-ease) infinite;
-  }
-
-  @keyframes gt-progress-slide {
-    0% {
-      transform: translateX(-100%);
-    }
-    100% {
-      transform: translateX(430%);
-    }
-  }
-
-  .gt-progress__ascii {
-    letter-spacing: 0.05em;
-    color: var(--gt-fg);
-  }
-
-  .gt-progress__value {
-    font-size: var(--gt-text-sm);
-    color: var(--gt-fg-muted);
-    min-width: 4ch;
-    text-align: right;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gt-progress__fill {
-      transition: none;
-      animation: none;
-    }
-  }
-}
-</style>
+<style src="./GlassProgress.css"></style>

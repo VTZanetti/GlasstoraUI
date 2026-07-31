@@ -33,48 +33,4 @@ const { surfaceAttrs } = useGlassSurface({
   </component>
 </template>
 
-<style>
-@layer glasstora {
-  .gt-card {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--gt-font-mono);
-    font-size: var(--gt-text-md);
-    color: var(--gt-fg);
-    text-align: left;
-  }
-
-  .gt-card__header {
-    padding: 16px 18px 0;
-  }
-
-  .gt-card__title {
-    margin: 0;
-    font-size: var(--gt-text-md);
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: lowercase;
-  }
-
-  .gt-card__body {
-    flex: 1 1 auto;
-    padding: 16px 18px;
-    color: var(--gt-fg-muted);
-    line-height: 1.7;
-  }
-
-  .gt-card__footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding: 0 18px 16px;
-  }
-
-  /* A card rendered as a button carries the browser defaults with it. */
-  button.gt-card {
-    width: 100%;
-    cursor: pointer;
-    font: inherit;
-  }
-}
-</style>
+<style src="./GlassCard.css"></style>

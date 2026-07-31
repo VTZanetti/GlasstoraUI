@@ -1,0 +1,90 @@
+@layer glasstora {
+  .gt-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg-muted);
+  }
+
+  .gt-slider--sm {
+    font-size: var(--gt-text-sm);
+  }
+  .gt-slider--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-slider__track {
+    position: relative;
+    flex: 1;
+    height: 4px;
+    border-radius: var(--gt-radius-full);
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    cursor: pointer;
+    touch-action: none;
+  }
+
+  .gt-slider--sm .gt-slider__track {
+    height: 3px;
+  }
+  .gt-slider--lg .gt-slider__track {
+    height: 6px;
+  }
+
+  .gt-slider__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--gt-slider-pct, 0%);
+    border-radius: inherit;
+    background: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-slider__thumb {
+    position: absolute;
+    top: 50%;
+    left: var(--gt-slider-pct, 0%);
+    width: 16px;
+    height: 16px;
+    /* Centred on the value rather than starting at it, so the middle of the
+       thumb is what the track position means. */
+    transform: translate(-50%, -50%);
+    display: block;
+    cursor: grab;
+  }
+
+  .gt-slider--sm .gt-slider__thumb {
+    width: 13px;
+    height: 13px;
+  }
+  .gt-slider--lg .gt-slider__thumb {
+    width: 20px;
+    height: 20px;
+  }
+
+  .gt-slider__thumb:active {
+    cursor: grabbing;
+  }
+
+  .gt-slider__thumb:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 3px;
+  }
+
+  .gt-slider__value {
+    min-width: 3ch;
+    color: var(--gt-fg);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+
+  .gt-slider--disabled {
+    opacity: 0.45;
+  }
+
+  .gt-slider--disabled .gt-slider__track,
+  .gt-slider--disabled .gt-slider__thumb {
+    cursor: not-allowed;
+  }
+}

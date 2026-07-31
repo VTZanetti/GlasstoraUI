@@ -1,0 +1,134 @@
+@layer glasstora {
+  .gt-accordion {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg);
+    text-align: left;
+  }
+
+  .gt-accordion__item + .gt-accordion__item {
+    border-top: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+  }
+
+  /* The heading carries the button so assistive technology can list the
+     sections. It takes the surrounding type rather than the browser default. */
+  .gt-accordion__heading {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .gt-accordion__trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    font: inherit;
+    color: var(--gt-fg-muted);
+    letter-spacing: 0.02em;
+    text-align: left;
+    cursor: pointer;
+    transition: color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-accordion__trigger:hover:not(:disabled),
+  .gt-accordion__item--open .gt-accordion__trigger {
+    color: var(--gt-fg);
+  }
+
+  .gt-accordion__trigger:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gt-accordion__trigger:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-accordion__marker {
+    flex-shrink: 0;
+    color: var(--gt-fg-faint);
+    transition:
+      transform var(--gt-dur-2) var(--gt-ease),
+      color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-accordion__item--open .gt-accordion__marker {
+    color: var(--gt-fg);
+    transform: rotate(90deg);
+  }
+
+  /* Height by grid track rather than by measuring in JavaScript: 0fr to 1fr
+     animates to whatever the content turns out to be, at any width. */
+  .gt-accordion__region {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-accordion__item--open .gt-accordion__region {
+    grid-template-rows: 1fr;
+  }
+
+  /* min-height is what lets the track go below the content height, and
+     visibility is what keeps a collapsed panel out of the tab order and out of
+     the accessibility tree. Unlike hidden, it can wait for the row to finish
+     collapsing, and it turns back on the moment the row starts opening. */
+  .gt-accordion__panel {
+    min-height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    transition: visibility var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-accordion__item--open .gt-accordion__panel {
+    visibility: visible;
+  }
+
+  .gt-accordion__content {
+    padding: 0 16px 14px;
+    color: var(--gt-fg-muted);
+    line-height: 1.7;
+  }
+
+  .gt-accordion--sm {
+    font-size: var(--gt-text-sm);
+  }
+
+  .gt-accordion--sm .gt-accordion__trigger {
+    padding: 10px 12px;
+  }
+
+  .gt-accordion--sm .gt-accordion__content {
+    padding: 0 12px 10px;
+  }
+
+  .gt-accordion--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-accordion--lg .gt-accordion__trigger {
+    padding: 18px 20px;
+  }
+
+  .gt-accordion--lg .gt-accordion__content {
+    padding: 0 20px 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-accordion__trigger,
+    .gt-accordion__marker,
+    .gt-accordion__region,
+    .gt-accordion__panel {
+      transition: none;
+    }
+  }
+}

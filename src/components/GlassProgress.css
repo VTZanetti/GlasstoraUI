@@ -1,0 +1,131 @@
+@layer glasstora {
+  .gt-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--gt-font-mono);
+    color: var(--gt-fg);
+  }
+
+  .gt-progress__track {
+    flex: 1;
+    display: block;
+    height: 4px;
+    overflow: hidden;
+    border-radius: var(--gt-radius-full);
+  }
+
+  .gt-progress--sm .gt-progress__track {
+    height: 2px;
+  }
+
+  .gt-progress--lg .gt-progress__track {
+    height: 6px;
+  }
+
+  .gt-progress__fill {
+    display: block;
+    height: 100%;
+    background: var(--gt-gray-9);
+    transition: width var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-progress--indeterminate .gt-progress__fill {
+    width: 30%;
+    animation: gt-progress-slide 1.4s var(--gt-ease) infinite;
+  }
+
+  @keyframes gt-progress-slide {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(430%);
+    }
+  }
+
+  .gt-progress__ascii {
+    letter-spacing: 0.05em;
+    color: var(--gt-fg);
+  }
+
+  /* The drawn counterpart of the ascii bar: the same cells, as boxes rather
+     than as characters. */
+  .gt-progress__cells {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .gt-progress__cell {
+    flex: 1;
+    height: 10px;
+    min-width: 2px;
+    border-radius: 1px;
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    transition: background-color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-progress__cell--1 {
+    background: rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+  }
+  .gt-progress__cell--2 {
+    background: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+  .gt-progress__cell--3 {
+    background: var(--gt-fg);
+  }
+
+  .gt-progress--sm .gt-progress__cell {
+    height: 7px;
+  }
+  .gt-progress--lg .gt-progress__cell {
+    height: 14px;
+  }
+
+  /* Dots are the same cells kept round rather than stretched.
+     A round cell cannot also fill its share of the track, so the leftover width
+     goes between them instead of at the end: spaced apart, the last dot lands on
+     the right edge like the last block does, rather than leaving the bar looking
+     unfinished next to the percentage. */
+  .gt-progress--dots .gt-progress__cells {
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .gt-progress--dots .gt-progress__cell {
+    flex: 0 0 auto;
+    width: 6px;
+    height: 6px;
+    border-radius: var(--gt-radius-full);
+  }
+
+  .gt-progress--sm.gt-progress--dots .gt-progress__cell {
+    width: 5px;
+    height: 5px;
+  }
+  .gt-progress--lg.gt-progress--dots .gt-progress__cell {
+    width: 8px;
+    height: 8px;
+  }
+
+  .gt-progress__value {
+    font-size: var(--gt-text-sm);
+    color: var(--gt-fg-muted);
+    min-width: 4ch;
+    text-align: right;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-progress__fill {
+      transition: none;
+      animation: none;
+    }
+
+    .gt-progress__cell {
+      transition: none;
+    }
+  }
+}

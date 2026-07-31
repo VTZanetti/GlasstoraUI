@@ -1,0 +1,82 @@
+@layer glasstora {
+  .gt-terminal {
+    font-family: var(--gt-font-mono);
+    color: var(--gt-fg);
+    border-radius: var(--gt-radius-lg);
+    overflow: hidden;
+  }
+
+  .gt-terminal__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+  }
+
+  .gt-terminal__dots {
+    display: inline-flex;
+    gap: 6px;
+    justify-self: start;
+  }
+
+  .gt-terminal__dots i {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
+
+  .gt-terminal__dots i:nth-child(1) {
+    background: var(--gt-gray-4);
+  }
+
+  .gt-terminal__dots i:nth-child(2) {
+    background: var(--gt-gray-6);
+  }
+
+  .gt-terminal__dots i:nth-child(3) {
+    background: var(--gt-gray-8);
+  }
+
+  .gt-terminal__title {
+    font-size: var(--gt-text-sm);
+    color: var(--gt-fg-muted);
+    letter-spacing: 0.04em;
+  }
+
+  .gt-terminal__screen {
+    position: relative;
+    min-height: 120px;
+    padding: 16px;
+    font-size: var(--gt-text-sm);
+    line-height: 1.8;
+  }
+
+  .gt-terminal__line {
+    display: flex;
+    gap: 8px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .gt-terminal__prompt {
+    color: var(--gt-fg-faint);
+    user-select: none;
+  }
+
+  .gt-terminal__text {
+    color: var(--gt-fg-muted);
+  }
+
+  .gt-terminal__cursor {
+    color: var(--gt-fg);
+    animation: gt-blink var(--gt-caret-blink) steps(1) infinite;
+  }
+
+  .gt-terminal__scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}

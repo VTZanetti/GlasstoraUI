@@ -1,0 +1,39 @@
+@layer glasstora {
+  .gt-tooltip__anchor {
+    display: inline-flex;
+  }
+
+  .gt-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 60;
+    max-width: 22rem;
+    padding: 6px 10px;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-sm);
+    line-height: 1.5;
+    color: var(--gt-fg);
+    pointer-events: none;
+    /* useFloating writes the position straight into transform, so this only
+       has to leave the property alone. */
+    will-change: transform;
+  }
+
+  .gt-tooltip-enter-active,
+  .gt-tooltip-leave-active {
+    transition: opacity var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-tooltip-enter-from,
+  .gt-tooltip-leave-to {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-tooltip-enter-active,
+    .gt-tooltip-leave-active {
+      transition: none;
+    }
+  }
+}

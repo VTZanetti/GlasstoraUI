@@ -22,10 +22,4 @@ const { surfaceAttrs } = useGlassSurface({
   </component>
 </template>
 
-<style>
-@layer glasstora {
-  .gt-surface {
-    padding: 20px;
-  }
-}
-</style>
+<style src="./GlassSurface.css"></style>
