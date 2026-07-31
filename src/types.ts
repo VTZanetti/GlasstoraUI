@@ -138,7 +138,7 @@ export interface GlassCheckboxProps {
 
 export interface GlassSpinnerProps {
   size?: GlassSize
-  /** Milliseconds per frame of the braille cycle. */
+  /** Frames per second of the braille cycle. Higher spins faster. */
   speed?: number
   /** Accessible name. Set it when the spinner stands on its own. */
   label?: string
@@ -182,9 +182,13 @@ export interface GlassPopoverProps {
 export interface GlassProgressProps {
   value?: number
   max?: number
-  /** 'line' renders a thin bar, 'ascii' renders block characters. */
-  mode?: 'line' | 'ascii'
-  /** Column count used by the ascii mode. */
+  /**
+   * 'line' is a thin continuous bar, 'ascii' spells the bar out in block
+   * characters, 'blocks' is a row of discrete segments that light up in turn,
+   * and 'dots' is the same idea at the density of a braille ramp.
+   */
+  mode?: 'line' | 'ascii' | 'blocks' | 'dots'
+  /** Segment count used by the ascii, blocks and dots modes. */
   cols?: number
   showValue?: boolean
   indeterminate?: boolean
@@ -212,4 +216,258 @@ export interface GlassTerminalProps {
   speed?: number
   prompt?: string
   scanlines?: boolean
+}
+
+export interface GlassRadioGroupProps {
+  modelValue?: string | number
+  /** Shared by every radio inside, so the browser groups them. */
+  name?: string
+  orientation?: 'horizontal' | 'vertical'
+  disabled?: boolean
+  size?: GlassSize
+  id?: string
+  invalid?: boolean
+  required?: boolean
+}
+
+export interface GlassRadioProps {
+  /** What the group reports when this one is picked. */
+  value: string | number
+  disabled?: boolean
+  id?: string
+}
+
+export interface GlassSliderProps {
+  modelValue?: number
+  min?: number
+  max?: number
+  step?: number
+  disabled?: boolean
+  size?: GlassSize
+  /** Prints the value beside the track. */
+  showValue?: boolean
+  /** Reads the value out for assistive technology, and prints it when shown. */
+  formatValue?: (value: number) => string
+  id?: string
+  name?: string
+  invalid?: boolean
+  required?: boolean
+  /** Accessible name when there is no GlassField or label pointing at it. */
+  label?: string
+}
+
+export interface GlassTabItem {
+  label: string
+  value: string
+  disabled?: boolean
+}
+
+export interface GlassTabsProps {
+  modelValue?: string
+  tabs: GlassTabItem[]
+  /**
+   * 'automatic' selects whatever the arrows land on, 'manual' waits for Enter
+   * or Space. Manual is the one to use when a panel is expensive to render.
+   */
+  activation?: 'automatic' | 'manual'
+  size?: GlassSize
+  /** Accessible name of the tab list. */
+  label?: string
+}
+
+export interface GlassTabPanelProps {
+  /** Matches the value of the tab that reveals it. */
+  value: string
+}
+
+export interface GlassAccordionItem {
+  value: string
+  title: string
+  disabled?: boolean
+}
+
+export interface GlassAccordionProps {
+  /** A single open value, or the list of them when multiple is set. */
+  modelValue?: string | string[]
+  items: GlassAccordionItem[]
+  /** Lets more than one section stay open at a time. */
+  multiple?: boolean
+  size?: GlassSize
+}
+
+export interface GlassBreadcrumbItem {
+  label: string
+  href?: string
+}
+
+export interface GlassBreadcrumbProps {
+  items: GlassBreadcrumbItem[]
+  /** Collapses the middle once the trail is longer than this. 0 never does. */
+  maxItems?: number
+  separator?: string
+  /** Accessible name of the trail. */
+  label?: string
+  /** Accessible name of the button that expands a collapsed trail. */
+  expandLabel?: string
+  size?: GlassSize
+}
+
+export interface GlassPaginationProps {
+  /** The current page, counting from one. */
+  modelValue?: number
+  pageCount: number
+  /** Pages kept either side of the current one. */
+  siblingCount?: number
+  /** Pages kept at each end of the range. */
+  boundaryCount?: number
+  disabled?: boolean
+  size?: GlassSize
+  label?: string
+  previousLabel?: string
+  nextLabel?: string
+  /** Accessible name of a page button. Defaults to the page number. */
+  pageLabel?: (page: number) => string
+}
+
+export interface GlassTableColumn {
+  key: string
+  label: string
+  sortable?: boolean
+  align?: 'start' | 'center' | 'end'
+  width?: string
+}
+
+/** Which column the rows are ordered by, and which way. */
+export interface GlassSortState {
+  key: string
+  direction: 'asc' | 'desc'
+}
+
+export interface GlassTableProps {
+  columns: GlassTableColumn[]
+  rows: Record<string, unknown>[]
+  /** Column whose value identifies a row, or a function that returns the key. */
+  rowKey?: string | ((row: Record<string, unknown>) => string)
+  /** Bind it with v-model:sort to order the rows yourself. */
+  sort?: GlassSortState | null
+  /** Replaces the default comparison when the table sorts its own rows. */
+  sortFn?: (a: Record<string, unknown>, b: Record<string, unknown>, sort: GlassSortState) => number
+  /** Keeps the header in place while the body scrolls. Needs maxHeight. */
+  stickyHeader?: boolean
+  maxHeight?: string
+  emptyLabel?: string
+  size?: GlassSize
+  label?: string
+}
+
+export interface GlassSelectOption {
+  label: string
+  value: string | number
+  disabled?: boolean
+}
+
+export interface GlassSelectProps {
+  modelValue?: string | number | null
+  options: GlassSelectOption[]
+  placeholder?: string
+  placement?: GlassPlacement
+  disabled?: boolean
+  size?: GlassSize
+  id?: string
+  name?: string
+  invalid?: boolean
+  required?: boolean
+  /** Accessible name when nothing else points at the control. */
+  label?: string
+}
+
+export interface GlassComboboxProps extends GlassSelectProps {
+  /** Replaces the default case insensitive substring match. */
+  filter?: (query: string, option: GlassSelectOption) => boolean
+  /** Shown in place of the list when the query matches nothing. */
+  noResultsLabel?: string
+  /** Lets the typed text stand as the value when it matches no option. */
+  allowCustomValue?: boolean
+}
+
+export interface GlassMenuItem {
+  label: string
+  value?: string
+  disabled?: boolean
+  /** Marks a destructive entry, which reads differently. */
+  danger?: boolean
+}
+
+export interface GlassMenuSeparator {
+  separator: true
+}
+
+export type GlassMenuEntry = GlassMenuItem | GlassMenuSeparator
+
+export interface GlassMenuProps {
+  modelValue?: boolean
+  items: GlassMenuEntry[]
+  placement?: GlassPlacement
+  offset?: number
+  disabled?: boolean
+  size?: GlassSize
+  /** Accessible name of the menu. */
+  label?: string
+}
+
+export type GlassDrawerSide = 'left' | 'right' | 'top' | 'bottom'
+
+export interface GlassDrawerProps {
+  modelValue: boolean
+  side?: GlassDrawerSide
+  /** Width on the sides, height on the top and bottom. */
+  size?: string
+  title?: string
+  closeOnOverlay?: boolean
+  closeOnEsc?: boolean
+  closable?: boolean
+  closeLabel?: string
+}
+
+export type GlassToastVariant = 'info' | 'success' | 'warn' | 'error'
+
+export type GlassToastPosition =
+  'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+
+export interface GlassToastOptions {
+  title?: string
+  message: string
+  variant?: GlassToastVariant
+  /** Milliseconds on screen. 0 keeps it until it is dismissed. */
+  duration?: number
+  closable?: boolean
+}
+
+export interface GlassToastProps {
+  position?: GlassToastPosition
+  /** Newest toasts past this many push the oldest out. 0 keeps every one. */
+  max?: number
+  closeLabel?: string
+}
+
+export interface GlassCommand {
+  id: string
+  label: string
+  /** Extra words the search should match, beyond the label. */
+  keywords?: string[]
+  /** Rendered as a GlassKbd beside the entry. */
+  shortcut?: string
+  group?: string
+  disabled?: boolean
+}
+
+export interface GlassCommandPaletteProps {
+  modelValue?: boolean
+  commands: GlassCommand[]
+  /** Keyboard shortcut that opens it. 'mod' is Meta on Apple, Control elsewhere. */
+  hotkey?: string
+  placeholder?: string
+  noResultsLabel?: string
+  /** Accessible name of the palette. */
+  label?: string
 }
