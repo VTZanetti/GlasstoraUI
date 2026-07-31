@@ -219,7 +219,8 @@ watch(open, async (isOpen) => {
   await nextTick()
   roving.refresh()
   const current = enabled.value.findIndex((option) => option.value === value.value)
-  roving.setActive(Math.max(current, 0))
+  // The focus stays in the input, so the list is asked to scroll on its own.
+  roving.setActive(Math.max(current, 0), false, true)
 })
 
 // Every change to the filter takes the active option out of the DOM with it, so
@@ -228,7 +229,7 @@ watch(matches, async () => {
   if (!open.value) return
   await nextTick()
   roving.refresh()
-  roving.setActive(0)
+  roving.setActive(0, false, true)
 })
 </script>
 

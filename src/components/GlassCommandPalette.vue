@@ -176,7 +176,8 @@ watch(
     await nextTick()
     inputRef.value?.focus()
     roving.refresh()
-    roving.setActive(0)
+    // The focus stays in the search box, so the list is asked to scroll itself.
+    roving.setActive(0, false, true)
   },
   // A palette mounted open never changes state, and would keep neither the
   // focus nor the first result.
@@ -189,7 +190,7 @@ watch(results, async () => {
   if (!open.value) return
   await nextTick()
   roving.refresh()
-  roving.setActive(0)
+  roving.setActive(0, false, true)
 })
 </script>
 

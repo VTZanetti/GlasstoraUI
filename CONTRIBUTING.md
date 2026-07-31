@@ -98,6 +98,22 @@ repositório ao site uma única vez, e cada mudança na branch `main` gera uma n
 Para publicar em um serviço que serve a partir de um subcaminho, defina a variável de ambiente
 `DEMO_BASE` com esse subcaminho, por exemplo `DEMO_BASE=/glasstora/`.
 
+## Publicando no npm
+
+Quem declara uma versão é o `package.json`. Suba o número dele e o registro correspondente no
+`CHANGELOG.md` dentro do próprio pull request; ao mergear na `main`, o fluxo de release compara o
+manifesto com o registro, e publica se aquela versão ainda não existir lá. Um merge que não mexe na
+versão para no primeiro passo e não faz nada.
+
+A publicação repete as verificações da integração contínua antes de enviar qualquer coisa, publica
+com proveniência e, tendo dado certo, cria a tag `v<versão>` apontando para o commit que saiu. Não é
+preciso criar tags à mão.
+
+A autenticação é por [trusted publisher](https://docs.npmjs.com/trusted-publishers) do npm, via
+OpenID Connect: não há token guardado no repositório. A confiança é registrada uma única vez nas
+configurações do pacote no npmjs, e aponta para esta organização, este repositório e o arquivo
+`release.yml`. Renomear esse arquivo quebra a publicação até que o registro seja atualizado.
+
 ## Reportando problemas
 
 Abra uma issue usando um dos modelos disponíveis. Para falhas visuais, informe o navegador, a versão

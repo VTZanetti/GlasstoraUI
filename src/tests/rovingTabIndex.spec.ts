@@ -10,6 +10,7 @@ interface Exposed {
   activeIndex: number
   activeId: string | undefined
   refresh: () => void
+  setActive: (index: number, moveFocus?: boolean, scroll?: boolean) => void
 }
 
 function harness(items: Item[], options: Partial<UseRovingTabIndexOptions> = {}) {
@@ -230,5 +231,76 @@ describe('useRovingTabIndex', () => {
     expect(vm.activeIndex).toBe(0)
     expect(wrapper.find('button').attributes('tabindex')).toBe('0')
     wrapper.unmount()
+  })
+
+  // scrollIntoView scrolls every scrollable ancestor, the document included, so
+  // a component that called it while merely syncing its selection would drag
+  // the page down to itself the moment it rendered.
+  describe('scrolling', () => {
+    // jsdom implements no scrollIntoView, which is why the call in setActive is
+    // optional. Lending the prototype one is what makes the difference between
+    // "scrolled" and "did not" visible to a test at all.
+    function spyOnScroll() {
+      const spy = vi.fn()
+      const original = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+      Element.prototype.scrollIntoView = spy
+      return {
+        spy,
+        restore: () => {
+          if (original) Object.defineProperty(Element.prototype, 'scrollIntoView', original)
+          else delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView
+        },
+      }
+    }
+
+    const three = [{ label: 'one' }, { label: 'two' }, { label: 'three' }]
+
+    it('stays put when the selection is only being synced', async () => {
+      const { spy, restore } = spyOnScroll()
+      try {
+        const { wrapper, vm } = harness(three)
+        await nextTick()
+
+        vm.setActive(2)
+
+        expect(vm.activeIndex).toBe(2)
+        expect(spy).not.toHaveBeenCalled()
+        wrapper.unmount()
+      } finally {
+        restore()
+      }
+    })
+
+    it('brings into view the item it moves the focus to', async () => {
+      const { spy, restore } = spyOnScroll()
+      try {
+        const { wrapper, press } = harness(three)
+        await nextTick()
+
+        await press('ArrowDown')
+
+        expect(spy).toHaveBeenCalledTimes(1)
+        wrapper.unmount()
+      } finally {
+        restore()
+      }
+    })
+
+    // A listbox driven by aria-activedescendant leaves the focus in the input,
+    // so it has to ask for the scroll on its own behalf.
+    it('scrolls without the focus when it is asked to', async () => {
+      const { spy, restore } = spyOnScroll()
+      try {
+        const { wrapper, vm } = harness(three, { focus: 'activedescendant' })
+        await nextTick()
+
+        vm.setActive(2, false, true)
+
+        expect(spy).toHaveBeenCalledTimes(1)
+        wrapper.unmount()
+      } finally {
+        restore()
+      }
+    })
   })
 })
