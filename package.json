@@ -55,6 +55,7 @@
       "types": "./dist/global.d.ts"
     },
     "./style.css": "./dist/style.css",
+    "./css/*.css": "./dist/css/*.css",
     "./package.json": "./package.json"
   },
   "peerDependencies": {
@@ -65,7 +66,7 @@
   },
   "scripts": {
     "dev": "vite -c vite.demo.config.ts",
-    "build": "vite build",
+    "build": "vite build && vite build -c vite.styles.config.ts",
     "build:demo": "vite build -c vite.demo.config.ts",
     "preview:demo": "vite preview -c vite.demo.config.ts",
     "test": "vitest run",
