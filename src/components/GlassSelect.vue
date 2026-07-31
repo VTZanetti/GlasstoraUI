@@ -120,7 +120,8 @@ watch(open, async (isOpen) => {
   roving.refresh()
   const current = props.options.findIndex((option) => option.value === value.value)
   const first = props.options.findIndex((option) => !option.disabled)
-  roving.setActive(current === -1 ? Math.max(first, 0) : current)
+  // The focus stays on the button, so the list is asked to scroll on its own.
+  roving.setActive(current === -1 ? Math.max(first, 0) : current, false, true)
 })
 </script>
 

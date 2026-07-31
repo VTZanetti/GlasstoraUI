@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { GlassRadio, GlassRadioGroup } from '../index'
@@ -116,5 +116,26 @@ describe('GlassRadioGroup', () => {
     wrapper = mountGroup({ name: 'plan' })
     await nextTick()
     expect(radios(wrapper).map((r) => r.attributes('name'))).toEqual(['plan', 'plan', 'plan'])
+  })
+
+  // The group moves its tab stop onto the checked radio as it renders. Doing
+  // that through a scroll would send a page holding one of these far below the
+  // fold to the group instead of to its own top.
+  it('does not scroll the page just by rendering', async () => {
+    const spy = vi.fn()
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    Element.prototype.scrollIntoView = spy
+
+    try {
+      wrapper = mountGroup({ modelValue: 'three' })
+      await nextTick()
+      await nextTick()
+
+      expect(checked(wrapper)).toBe(2)
+      expect(spy).not.toHaveBeenCalled()
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'scrollIntoView', original)
+      else delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView
+    }
   })
 })

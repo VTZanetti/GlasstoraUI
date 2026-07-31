@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { h, nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { GlassTabPanel, GlassTabs, type GlassTabItem } from '../index'
@@ -133,5 +133,25 @@ describe('GlassTabs', () => {
     await tabs(wrapper)[0].trigger('click')
     expect(selected(wrapper)).toBe(2)
     expect(wrapper.emitted('update:modelValue')).toEqual([['one']])
+  })
+
+  // The tab stop follows the selection from the first render onwards, and a
+  // page carrying a tablist below the fold must still open at its own top.
+  it('does not scroll the page just by rendering', async () => {
+    const spy = vi.fn()
+    const original = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollIntoView')
+    Element.prototype.scrollIntoView = spy
+
+    try {
+      wrapper = mountTabs({ modelValue: 'three' })
+      await nextTick()
+      await nextTick()
+
+      expect(selected(wrapper)).toBe(2)
+      expect(spy).not.toHaveBeenCalled()
+    } finally {
+      if (original) Object.defineProperty(Element.prototype, 'scrollIntoView', original)
+      else delete (Element.prototype as { scrollIntoView?: unknown }).scrollIntoView
+    }
   })
 })

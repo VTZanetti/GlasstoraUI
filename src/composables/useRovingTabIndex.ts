@@ -41,7 +41,13 @@ export interface UseRovingTabIndexReturn {
   /** The id of the active item, for aria-activedescendant. */
   activeId: ComputedRef<string | undefined>
   items: () => HTMLElement[]
-  setActive: (index: number, moveFocus?: boolean) => void
+  /**
+   * Moving the focus brings the item into view with it. Pass `scroll` to ask
+   * for that on its own, which is what a listbox left behind by
+   * aria-activedescendant needs; leave it alone to only mark the item, which
+   * is what syncing a selection to a model does.
+   */
+  setActive: (index: number, moveFocus?: boolean, scroll?: boolean) => void
   onKeydown: (event: KeyboardEvent) => void
   /** Re-reads the DOM. Call it after the item list changes, past nextTick. */
   refresh: () => void
@@ -90,7 +96,15 @@ export function useRovingTabIndex(options: UseRovingTabIndexOptions): UseRovingT
     })
   }
 
-  function setActive(index: number, moveFocus = false) {
+  /**
+   * Scrolling follows the focus by default, because the two belong together:
+   * the arrow keys move the selection and the item they land on has to be
+   * visible. It does not happen on its own, because scrollIntoView scrolls
+   * every scrollable ancestor up to the document, so a group that scrolled
+   * while merely syncing its selection to a model would pull the page down to
+   * itself the moment it rendered.
+   */
+  function setActive(index: number, moveFocus = false, scroll = moveFocus) {
     const list = items()
     if (!list.length) return
     const clamped = Math.max(0, Math.min(index, list.length - 1))
@@ -100,7 +114,7 @@ export function useRovingTabIndex(options: UseRovingTabIndexOptions): UseRovingT
     const item = list[clamped]
     if (moveFocus && mode === 'dom') item.focus()
     // Not implemented in jsdom, and never essential to what it does.
-    item.scrollIntoView?.({ block: 'nearest' })
+    if (scroll) item.scrollIntoView?.({ block: 'nearest' })
   }
 
   function refresh() {

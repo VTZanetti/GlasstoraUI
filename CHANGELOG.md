@@ -51,6 +51,13 @@ mudou de nome ou de comportamento.
   de `ref` era escrita direto no template, portanto era outra a cada renderização, e o Vue lê uma
   `ref` trocada como o elemento saindo: a lista inteira soltava e registrava todas as superfícies a
   cada patch, justo quando havia menos folga.
+- O `useRovingTabIndex` deixou de rolar a página quando apenas sincroniza a seleção. O
+  `scrollIntoView` rola todo ancestral rolável, o documento incluído, e tanto o `GlassRadioGroup`
+  quanto o `GlassTabs` levam o ponto de tabulação até o item marcado já na primeira renderização:
+  uma página com um deles abaixo da dobra abria nele em vez de no próprio topo. A rolagem agora
+  acompanha o foco, e quem precisa dela sem mover o foco — o `GlassSelect`, o `GlassCombobox` e o
+  `GlassCommandPalette`, que mantêm o foco no campo e marcam a opção por `aria-activedescendant` —
+  pede explicitamente.
 
 ### Alterado
 
