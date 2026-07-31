@@ -17,6 +17,7 @@ import GlassRadioGroup from './components/GlassRadioGroup.vue'
 import GlassSlider from './components/GlassSlider.vue'
 import GlassSelect from './components/GlassSelect.vue'
 import GlassCombobox from './components/GlassCombobox.vue'
+import GlassMenu from './components/GlassMenu.vue'
 import GlassTabs from './components/GlassTabs.vue'
 import GlassTabPanel from './components/GlassTabPanel.vue'
 import GlassAccordion from './components/GlassAccordion.vue'
@@ -52,6 +53,7 @@ export const components: Record<string, Component> = {
   GlassSlider,
   GlassSelect,
   GlassCombobox,
+  GlassMenu,
   GlassTabs,
   GlassTabPanel,
   GlassAccordion,
