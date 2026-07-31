@@ -54,9 +54,13 @@ mudou de nome ou de comportamento.
 
 ### Alterado
 
-- **`speed` do `GlassSpinner` agora é quadros por segundo, e não mais milissegundos por quadro.**
-  Aumentar o número acelera o giro, que é o que o nome promete; antes fazia o contrário. O padrão
-  passou de `80` para `12`, que é a mesma velocidade de antes.
+- **Incompatível: `speed` do `GlassSpinner` agora é quadros por segundo, e não mais milissegundos
+  por quadro.** Aumentar o número acelera o giro, que é o que o nome promete; antes fazia o
+  contrário. O padrão passou de `80` para `12`, que é a mesma velocidade, então quem não toca na
+  propriedade não vê diferença. Quem passava um valor precisa convertê-lo: o equivalente de `80` é
+  `12`, e a conta é `1000 / milissegundos`. Deixado como está, um `:speed="80"` vindo da 0.2.0 pede
+  12,5 ms por quadro e esbarra no piso de 16 ms do ticker, girando cinco vezes mais rápido em vez de
+  mais devagar.
 - O `GlassProgress` ganhou os modos `blocks` e `dots`, a mesma leitura célula a célula do `ascii`
   desenhada em vez de escrita. Os três compartilham a varredura do estado indeterminado.
 - O cabeçalho fixo do `GlassTable` ficou opaco. Um `backdrop-filter` não desfoca o que rola sob um
