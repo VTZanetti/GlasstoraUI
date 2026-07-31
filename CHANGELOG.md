@@ -7,6 +7,74 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+## [0.3.0]
+
+O tema desta versão é fechar o catálogo de interface e levar a biblioteca ao npm com um custo de
+estilo proporcional ao uso: quem importa três componentes passa a carregar a base e três folhas, e
+não as trinta e seis. O catálogo vai de vinte e um para trinta e seis componentes. Nada da API 0.2.0
+mudou de nome ou de comportamento.
+
+### Adicionado
+
+- Quinze componentes: `GlassRadio` e `GlassRadioGroup`, `GlassSlider`, `GlassSelect`,
+  `GlassCombobox`, `GlassMenu`, `GlassTabs` e `GlassTabPanel`, `GlassAccordion`, `GlassBreadcrumb`,
+  `GlassPagination`, `GlassTable`, `GlassDrawer`, `GlassToast` e `GlassCommandPalette`.
+- Composable `useToast()`, a única primitiva pública nova. A fila vive em escopo de módulo, como o
+  registro de luz, então um aviso pode ser disparado de qualquer lugar, inclusive de fora de um
+  componente. O `GlassToast` é o ponto de saída que a aplicação monta uma vez.
+- Folha de estilo por componente em `glasstora/css/`, com a base compartilhada em
+  `glasstora/css/base.css`. O resolver de `unplugin-vue-components` passa a importar apenas o que a
+  página renderiza; a opção `css: 'bundle'` restaura o comportamento da 0.2.0 para quem precisar.
+- Publicação automatizada no npm. Empurrar uma tag `v*` dispara o fluxo de release, que repete as
+  verificações da integração contínua, confere a tag contra o manifesto e publica com proveniência.
+- Verificação do pacote construído (`npm run check:dist`), que roda na integração contínua e antes
+  de publicar. Ela cobre a dívida que estava registrada desde a 0.2.0: nenhuma regra `.gt-` pode
+  ficar fora da camada `glasstora`. Também confere que todo componente tem folha de estilo, que a
+  divisão e o arquivo único dizem a mesma coisa, e que todo caminho citado pelo resolver existe.
+- Três primitivas internas que os componentes novos compartilham: `useControllable`, para um valor
+  que funciona com e sem `v-model`; `useRovingTabIndex`, com orientação, laço, ativação manual ou
+  automática, modo `aria-activedescendant` e busca por digitação; e `scrollLock`, extraído do
+  `GlassModal`.
+
+### Corrigido
+
+- Escape e clique fora agora pertencem à camada mais alta. Cada camada escutava o documento por
+  conta própria e todas respondiam juntas, então um menu aberto dentro de um modal derrubava o
+  modal. Pior: o painel do menu é teleportado e portanto fica fora do painel do modal, de modo que
+  clicar num item do menu era lido como clique fora do modal.
+- A trava de rolagem passou a contar quem a segura. Duas camadas abertas ao mesmo tempo faziam a
+  segunda gravar `overflow: hidden` como o valor a restaurar, e a página nunca voltava a rolar.
+- O `max` do `GlassToast` derruba os avisos excedentes em vez de apenas escondê-los. Eles ficavam na
+  fila com o temporizador correndo atrás do limite, e uma rajada de notificações voltava a aparecer
+  minutos depois, conforme os visíveis expiravam e descobriam o acúmulo.
+- Cada item do `GlassToast` deixou de se registrar de novo no motor de luz a cada quadro. A função
+  de `ref` era escrita direto no template, portanto era outra a cada renderização, e o Vue lê uma
+  `ref` trocada como o elemento saindo: a lista inteira soltava e registrava todas as superfícies a
+  cada patch, justo quando havia menos folga.
+
+### Alterado
+
+- **`speed` do `GlassSpinner` agora é quadros por segundo, e não mais milissegundos por quadro.**
+  Aumentar o número acelera o giro, que é o que o nome promete; antes fazia o contrário. O padrão
+  passou de `80` para `12`, que é a mesma velocidade de antes.
+- O `GlassProgress` ganhou os modos `blocks` e `dots`, a mesma leitura célula a célula do `ascii`
+  desenhada em vez de escrita. Os três compartilham a varredura do estado indeterminado.
+- O cabeçalho fixo do `GlassTable` ficou opaco. Um `backdrop-filter` não desfoca o que rola sob um
+  irmão fixo no mesmo contêiner, então as linhas passavam legíveis por baixo dos nomes das colunas.
+- O `GlassTabs` quebra linha em vez de rolar, e o painel do `GlassMenu` não tem mais altura máxima.
+  Uma lista que rola esconde itens atrás de uma borda sem nada que diga que eles existem, e as setas
+  do roving levavam a seleção para fora da tela.
+- As listas do `GlassSelect` e do `GlassCombobox` só rolam na vertical; um rótulo comprido é cortado
+  com reticências em vez de criar uma barra horizontal.
+- O painel do `GlassSelect` e do `GlassCombobox` abre desenrolando a partir da borda encostada no
+  gatilho. Antes a transição animava `transform`, que é a propriedade que o posicionador reescreve a
+  cada quadro, então o painel saltava para o canto da janela durante a animação.
+- O estilo de cada componente passou a viver num arquivo `.css` irmão do `.vue`, referenciado por
+  `<style src>`. É o que torna a divisão possível; o resultado visual e o `dist/style.css` são os
+  mesmos byte a byte.
+- A folha base abre declarando `@layer glasstora`, para que a posição da camada na cascata venha
+  dela e não de qualquer folha de componente que o empacotador resolva emitir primeiro.
+
 ## [0.2.0]
 
 O tema desta versão é a coerência dos reflexos entre os componentes, e a abertura da biblioteca para
@@ -128,6 +196,7 @@ global, com a demonstração no ar.
 - Página de demonstração com navegação lateral, controles de propriedade em tempo real e exemplos
   de código copiáveis para cada componente, publicada no Netlify.
 
-[não lançado]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.2.0...HEAD
+[não lançado]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/VTZanetti/GlasstoraUI/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/VTZanetti/GlasstoraUI/releases/tag/v0.1.0

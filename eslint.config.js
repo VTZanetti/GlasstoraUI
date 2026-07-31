@@ -21,5 +21,12 @@ export default tseslint.config(
       'no-undef': 'off',
     },
   },
+  {
+    // Build scripts run in Node, so console and process are theirs to use.
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: { console: 'readonly', process: 'readonly' },
+    },
+  },
   eslintConfigPrettier,
 )

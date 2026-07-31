@@ -1,0 +1,78 @@
+@layer glasstora {
+  .gt-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg-muted);
+    cursor: pointer;
+    user-select: none;
+    text-align: left;
+  }
+
+  .gt-radio--on {
+    color: var(--gt-fg);
+  }
+
+  .gt-radio__box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    transition: background-color var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-radio--sm .gt-radio__box {
+    width: 13px;
+    height: 13px;
+  }
+  .gt-radio--lg .gt-radio__box {
+    width: 20px;
+    height: 20px;
+  }
+
+  .gt-radio__dot {
+    width: 40%;
+    height: 40%;
+    border-radius: var(--gt-radius-full);
+    background: var(--gt-fg);
+    opacity: 0;
+    transform: scale(0.4);
+    transition:
+      opacity var(--gt-dur-1) var(--gt-ease),
+      transform var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-radio--on .gt-radio__dot {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .gt-radio--on .gt-radio__box {
+    --gt-glass-alpha: 0.16;
+    --gt-border-alpha: 0.34;
+  }
+
+  .gt-radio:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gt-radio:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-radio__box,
+    .gt-radio__dot {
+      transition: none;
+    }
+  }
+}

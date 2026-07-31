@@ -77,5 +77,8 @@ function openGitHub() {
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 36px;
+  /* The side navigation sticks right under this, so the two need air between
+     them rather than meeting the moment the page starts moving. */
+  margin-bottom: 72px;
 }
 </style>

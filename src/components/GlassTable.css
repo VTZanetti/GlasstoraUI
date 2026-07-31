@@ -1,0 +1,142 @@
+@layer glasstora {
+  .gt-table {
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg);
+    text-align: left;
+  }
+
+  /* The scroll lives on this wrapper and never on the surface itself. The
+     specular ring is an ::after inset by -1px, so a scroll container on the
+     glass would clip the ring and count it as overflow to scroll past. */
+  .gt-table__scroll {
+    overflow: auto;
+    border-radius: inherit;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha)) transparent;
+  }
+
+  /* Separate rather than collapsed borders, because a collapsed border belongs
+     to the table and stops being painted once a sticky header scrolls away. */
+  .gt-table__grid {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font: inherit;
+    color: inherit;
+  }
+
+  .gt-table__cell {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+    color: var(--gt-fg-muted);
+    font-weight: 400;
+    vertical-align: middle;
+  }
+
+  .gt-table__cell--head {
+    color: var(--gt-fg);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    border-bottom-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-table__body .gt-table__row:last-child .gt-table__cell {
+    border-bottom: none;
+  }
+
+  .gt-table__body .gt-table__row {
+    transition: background-color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-table__body .gt-table__row:hover {
+    background-color: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+  }
+
+  .gt-table__cell--start {
+    text-align: start;
+  }
+
+  .gt-table__cell--center {
+    text-align: center;
+  }
+
+  .gt-table__cell--end {
+    text-align: end;
+  }
+
+  .gt-table__cell--empty {
+    padding: 28px 14px;
+    color: var(--gt-fg-faint);
+    text-align: center;
+  }
+
+  .gt-table__sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  .gt-table__sort:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-table__mark {
+    color: var(--gt-fg-faint);
+    font-size: 0.85em;
+    transition: color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-table__cell--sorted .gt-table__mark,
+  .gt-table__sort:hover .gt-table__mark {
+    color: var(--gt-fg);
+  }
+
+  /* Opaque, not frosted. A backdrop-filter does not blur what scrolls under a
+     sticky sibling in the same scroller, so a translucent header left the rows
+     legible straight through the column names. The page colour underneath plus
+     the panel's own fill keeps it in the family without a literal colour.
+     Needs maxHeight on the wrapper to have anything to stick against. */
+  .gt-table--sticky .gt-table__cell--head {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--gt-bg);
+    background-image: linear-gradient(
+      rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha)),
+      rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha))
+    );
+  }
+
+  .gt-table--sm {
+    font-size: var(--gt-text-sm);
+  }
+
+  .gt-table--sm .gt-table__cell {
+    padding: 7px 10px;
+  }
+
+  .gt-table--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-table--lg .gt-table__cell {
+    padding: 13px 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-table__body .gt-table__row,
+    .gt-table__mark {
+      transition: none;
+    }
+  }
+}

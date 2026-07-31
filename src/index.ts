@@ -10,6 +10,18 @@ export { default as GlassTextarea } from './components/GlassTextarea.vue'
 export { default as GlassField } from './components/GlassField.vue'
 export { default as GlassCheckbox } from './components/GlassCheckbox.vue'
 export { default as GlassSwitch } from './components/GlassSwitch.vue'
+export { default as GlassRadio } from './components/GlassRadio.vue'
+export { default as GlassRadioGroup } from './components/GlassRadioGroup.vue'
+export { default as GlassSlider } from './components/GlassSlider.vue'
+export { default as GlassSelect } from './components/GlassSelect.vue'
+export { default as GlassCombobox } from './components/GlassCombobox.vue'
+export { default as GlassMenu } from './components/GlassMenu.vue'
+export { default as GlassTabs } from './components/GlassTabs.vue'
+export { default as GlassTabPanel } from './components/GlassTabPanel.vue'
+export { default as GlassAccordion } from './components/GlassAccordion.vue'
+export { default as GlassBreadcrumb } from './components/GlassBreadcrumb.vue'
+export { default as GlassPagination } from './components/GlassPagination.vue'
+export { default as GlassTable } from './components/GlassTable.vue'
 export { default as GlassKbd } from './components/GlassKbd.vue'
 export { default as GlassBadge } from './components/GlassBadge.vue'
 export { default as GlassAvatar } from './components/GlassAvatar.vue'
@@ -20,8 +32,12 @@ export { default as GlassAlert } from './components/GlassAlert.vue'
 export { default as GlassTooltip } from './components/GlassTooltip.vue'
 export { default as GlassPopover } from './components/GlassPopover.vue'
 export { default as GlassModal } from './components/GlassModal.vue'
+export { default as GlassDrawer } from './components/GlassDrawer.vue'
+export { default as GlassToast } from './components/GlassToast.vue'
+export { default as GlassCommandPalette } from './components/GlassCommandPalette.vue'
 export { default as GlassTerminal } from './components/GlassTerminal.vue'
 
+export { useToast, type UseToastReturn, type ToastEntry } from './composables/useToast'
 export { useGlassLight } from './composables/useGlassLight'
 export { useGlassConfig } from './composables/useGlassConfig'
 export { useGlassSurface } from './composables/useGlassSurface'
@@ -62,6 +78,27 @@ export type {
   GlassFieldProps,
   GlassCheckboxProps,
   GlassSwitchProps,
+  GlassRadioProps,
+  GlassRadioGroupProps,
+  GlassSliderProps,
+  GlassSelectProps,
+  GlassSelectOption,
+  GlassComboboxProps,
+  GlassMenuProps,
+  GlassMenuItem,
+  GlassMenuSeparator,
+  GlassMenuEntry,
+  GlassTabsProps,
+  GlassTabPanelProps,
+  GlassTabItem,
+  GlassAccordionProps,
+  GlassAccordionItem,
+  GlassBreadcrumbProps,
+  GlassBreadcrumbItem,
+  GlassPaginationProps,
+  GlassTableProps,
+  GlassTableColumn,
+  GlassSortState,
   GlassBadgeProps,
   GlassAvatarProps,
   GlassSpinnerProps,
@@ -71,6 +108,14 @@ export type {
   GlassTooltipProps,
   GlassPopoverProps,
   GlassModalProps,
+  GlassDrawerProps,
+  GlassDrawerSide,
+  GlassToastProps,
+  GlassToastOptions,
+  GlassToastVariant,
+  GlassToastPosition,
+  GlassCommandPaletteProps,
+  GlassCommand,
   GlassTerminalProps,
 } from './types'
 

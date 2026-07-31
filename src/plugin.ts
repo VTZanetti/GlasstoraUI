@@ -12,6 +12,18 @@ import GlassTextarea from './components/GlassTextarea.vue'
 import GlassField from './components/GlassField.vue'
 import GlassCheckbox from './components/GlassCheckbox.vue'
 import GlassSwitch from './components/GlassSwitch.vue'
+import GlassRadio from './components/GlassRadio.vue'
+import GlassRadioGroup from './components/GlassRadioGroup.vue'
+import GlassSlider from './components/GlassSlider.vue'
+import GlassSelect from './components/GlassSelect.vue'
+import GlassCombobox from './components/GlassCombobox.vue'
+import GlassMenu from './components/GlassMenu.vue'
+import GlassTabs from './components/GlassTabs.vue'
+import GlassTabPanel from './components/GlassTabPanel.vue'
+import GlassAccordion from './components/GlassAccordion.vue'
+import GlassBreadcrumb from './components/GlassBreadcrumb.vue'
+import GlassPagination from './components/GlassPagination.vue'
+import GlassTable from './components/GlassTable.vue'
 import GlassKbd from './components/GlassKbd.vue'
 import GlassBadge from './components/GlassBadge.vue'
 import GlassAvatar from './components/GlassAvatar.vue'
@@ -22,6 +34,9 @@ import GlassAlert from './components/GlassAlert.vue'
 import GlassTooltip from './components/GlassTooltip.vue'
 import GlassPopover from './components/GlassPopover.vue'
 import GlassModal from './components/GlassModal.vue'
+import GlassDrawer from './components/GlassDrawer.vue'
+import GlassToast from './components/GlassToast.vue'
+import GlassCommandPalette from './components/GlassCommandPalette.vue'
 import GlassTerminal from './components/GlassTerminal.vue'
 
 /** Every component in the catalogue, keyed by its default name. */
@@ -36,6 +51,18 @@ export const components: Record<string, Component> = {
   GlassField,
   GlassCheckbox,
   GlassSwitch,
+  GlassRadio,
+  GlassRadioGroup,
+  GlassSlider,
+  GlassSelect,
+  GlassCombobox,
+  GlassMenu,
+  GlassTabs,
+  GlassTabPanel,
+  GlassAccordion,
+  GlassBreadcrumb,
+  GlassPagination,
+  GlassTable,
   GlassKbd,
   GlassBadge,
   GlassAvatar,
@@ -46,6 +73,9 @@ export const components: Record<string, Component> = {
   GlassTooltip,
   GlassPopover,
   GlassModal,
+  GlassDrawer,
+  GlassToast,
+  GlassCommandPalette,
   GlassTerminal,
 }
 

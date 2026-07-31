@@ -1,5 +1,11 @@
 <script setup lang="ts">
-defineProps<{ label: string; modelValue: number; min?: number; max?: number }>()
+defineProps<{
+  label: string
+  modelValue: number
+  min?: number
+  max?: number
+  disabled?: boolean
+}>()
 const emit = defineEmits<{ 'update:modelValue': [value: number] }>()
 
 function onInput(event: Event) {
@@ -8,7 +14,7 @@ function onInput(event: Event) {
 </script>
 
 <template>
-  <label class="range">
+  <label class="range" :class="{ 'range--disabled': disabled }">
     <span class="range__label">{{ label }}</span>
     <input
       class="range__input"
@@ -16,6 +22,7 @@ function onInput(event: Event) {
       :min="min ?? 0"
       :max="max ?? 100"
       :value="modelValue"
+      :disabled="disabled"
       @input="onInput"
     />
     <span class="range__value">{{ modelValue }}</span>
@@ -67,6 +74,14 @@ function onInput(event: Event) {
 .range__input:focus-visible {
   outline: 1px solid rgb(var(--gt-line-tint) / 0.75);
   outline-offset: 4px;
+}
+
+.range--disabled {
+  opacity: 0.45;
+}
+
+.range--disabled .range__input {
+  cursor: not-allowed;
 }
 
 .range__value {

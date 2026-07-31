@@ -1,0 +1,68 @@
+@layer glasstora {
+  .gt-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+  }
+
+  .gt-tabs--sm {
+    font-size: var(--gt-text-sm);
+  }
+  .gt-tabs--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-tabs__list {
+    display: flex;
+    /* Wraps onto a second row rather than scrolling. A scrolling tablist hides
+       tabs behind an edge with nothing to say they are there, and the roving
+       arrows would move the selection to something off screen. */
+    flex-wrap: wrap;
+    align-self: flex-start;
+    max-width: 100%;
+    gap: 2px;
+    padding: 3px;
+  }
+
+  .gt-tabs__tab {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    border-radius: var(--gt-radius-sm);
+    font: inherit;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    color: var(--gt-fg-muted);
+    cursor: pointer;
+    transition:
+      background-color var(--gt-dur-1) var(--gt-ease),
+      color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-tabs__tab:hover:not(:disabled) {
+    color: var(--gt-fg);
+  }
+
+  .gt-tabs__tab--on {
+    color: var(--gt-fg);
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+  }
+
+  .gt-tabs__tab:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .gt-tabs__tab:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: -1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-tabs__tab {
+      transition: none;
+    }
+  }
+}

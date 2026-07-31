@@ -1,0 +1,91 @@
+@layer glasstora {
+  .gt-palette {
+    font-family: var(--gt-font-mono);
+  }
+
+  .gt-palette__search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+  }
+
+  .gt-palette__prompt {
+    color: var(--gt-fg-faint);
+    user-select: none;
+  }
+
+  .gt-palette__input {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    font: inherit;
+    font-size: var(--gt-text-lg);
+    color: var(--gt-fg);
+  }
+
+  .gt-palette__input::placeholder {
+    color: var(--gt-fg-faint);
+  }
+
+  .gt-palette__list {
+    max-height: 20rem;
+    margin-top: 10px;
+    overflow-y: auto;
+    font-size: var(--gt-text-md);
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha)) transparent;
+  }
+
+  .gt-palette__group + .gt-palette__group {
+    margin-top: 10px;
+  }
+
+  .gt-palette__group-label {
+    padding: 4px 10px;
+    font-size: var(--gt-text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gt-fg-faint);
+  }
+
+  .gt-palette__option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 10px;
+    border-radius: var(--gt-radius-sm);
+    color: var(--gt-fg-muted);
+    cursor: pointer;
+  }
+
+  .gt-palette__option--active {
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    color: var(--gt-fg);
+  }
+
+  .gt-palette__option[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .gt-palette__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gt-palette__shortcut {
+    flex-shrink: 0;
+  }
+
+  .gt-palette__empty {
+    padding: 12px 10px;
+    color: var(--gt-fg-faint);
+  }
+}

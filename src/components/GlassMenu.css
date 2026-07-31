@@ -1,0 +1,112 @@
+@layer glasstora {
+  .gt-menu {
+    display: inline-flex;
+  }
+
+  .gt-menu__trigger {
+    padding: 0;
+    background: transparent;
+    border: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .gt-menu__trigger:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-menu__panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 55;
+    display: flex;
+    flex-direction: column;
+    min-width: 10rem;
+    padding: 6px;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    will-change: transform;
+  }
+
+  .gt-menu__panel--sm {
+    font-size: var(--gt-text-sm);
+  }
+  .gt-menu__panel--lg {
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-menu__item {
+    display: block;
+    width: 100%;
+    padding: 7px 10px;
+    background: transparent;
+    border: none;
+    border-radius: var(--gt-radius-sm);
+    font: inherit;
+    color: var(--gt-fg-muted);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  /* The focus lands on the item itself here, so hover and focus are the same
+     state as far as the menu is concerned. */
+  .gt-menu__item:hover:not(:disabled),
+  .gt-menu__item:focus {
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    color: var(--gt-fg);
+    outline: none;
+  }
+
+  .gt-menu__item:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-menu__item:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* The library is monochrome, so a destructive entry is marked by a rule down
+     its edge and full strength text rather than by turning red. */
+  .gt-menu__item--danger {
+    color: var(--gt-fg);
+    box-shadow: inset 2px 0 0 rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-menu__item--danger:hover:not(:disabled),
+  .gt-menu__item--danger:focus {
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-strong-alpha));
+  }
+
+  .gt-menu__separator {
+    height: 1px;
+    margin: 5px 4px;
+    background: rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+  }
+
+  /* Only opacity moves. The transform belongs to useFloating, and animating it
+     here would fight the positioner for the same property. */
+  .gt-menu-enter-active,
+  .gt-menu-leave-active {
+    transition: opacity var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-menu-enter-from,
+  .gt-menu-leave-to {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-menu__item,
+    .gt-menu-enter-active,
+    .gt-menu-leave-active {
+      transition: none;
+    }
+  }
+}

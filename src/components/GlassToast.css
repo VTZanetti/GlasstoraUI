@@ -1,0 +1,168 @@
+@layer glasstora {
+  /* Above the modal and the drawer, which share 50. A toast raised from inside
+     a dialog is usually about the dialog, and one that reports a failure behind
+     it would be worse than not showing it at all. */
+  .gt-toast {
+    position: fixed;
+    z-index: 70;
+    width: min(22rem, calc(100vw - 32px));
+    padding: 16px;
+    font-family: var(--gt-font-mono);
+    /* The region spans a whole corner whether or not it holds anything, so it
+       must not eat presses meant for the page. The items take them back. */
+    pointer-events: none;
+  }
+
+  .gt-toast__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gt-toast--top-left,
+  .gt-toast--top-center,
+  .gt-toast--top-right {
+    top: 0;
+  }
+
+  .gt-toast--bottom-left,
+  .gt-toast--bottom-center,
+  .gt-toast--bottom-right {
+    bottom: 0;
+  }
+
+  .gt-toast--top-left,
+  .gt-toast--bottom-left {
+    left: 0;
+  }
+
+  .gt-toast--top-right,
+  .gt-toast--bottom-right {
+    right: 0;
+  }
+
+  .gt-toast--top-center,
+  .gt-toast--bottom-center {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gt-toast__item {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    font-size: var(--gt-text-sm);
+    color: var(--gt-fg);
+    line-height: 1.6;
+    /* The left rule is what separates the variants, since nothing here is
+       allowed to introduce a hue. The scale is the one GlassAlert uses, so the
+       same message reads the same in either place. */
+    border-left-width: 2px;
+  }
+
+  .gt-toast__item--info {
+    border-left-color: rgb(var(--gt-line-tint) / 0.3);
+  }
+  .gt-toast__item--success {
+    border-left-color: rgb(var(--gt-line-tint) / 0.5);
+  }
+  .gt-toast__item--warn {
+    border-left-color: rgb(var(--gt-line-tint) / 0.7);
+    border-left-style: dashed;
+  }
+  .gt-toast__item--error {
+    border-left-color: var(--gt-fg);
+    border-left-style: double;
+    border-left-width: 4px;
+  }
+
+  .gt-toast__mark {
+    flex-shrink: 0;
+    width: 1.4em;
+    height: 1.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+    border-radius: var(--gt-radius-full);
+    font-size: 0.85em;
+  }
+
+  .gt-toast__content {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .gt-toast__title {
+    margin: 0;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  .gt-toast__message {
+    margin: 0;
+    color: var(--gt-fg-muted);
+    overflow-wrap: anywhere;
+  }
+
+  .gt-toast__title + .gt-toast__message {
+    margin-top: 4px;
+  }
+
+  .gt-toast__close {
+    flex-shrink: 0;
+    padding: 0 2px;
+    background: transparent;
+    border: none;
+    color: var(--gt-fg-faint);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .gt-toast__close:hover {
+    color: var(--gt-fg);
+  }
+
+  .gt-toast__close:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  /* Transition. The classes land on the items, not on the region, so the side
+     a toast comes in from is read off the region's position class.
+
+     There is no move transition on purpose: it needs the leaving item taken out
+     of flow, and an absolutely positioned toast inside a region that is itself
+     pinned to a corner lands somewhere different for each of the six
+     positions. */
+  .gt-toast-enter-active,
+  .gt-toast-leave-active {
+    transition:
+      opacity var(--gt-dur-2) var(--gt-ease),
+      transform var(--gt-dur-2) var(--gt-ease);
+  }
+
+  .gt-toast-enter-from,
+  .gt-toast-leave-to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  .gt-toast--top-left .gt-toast-enter-from,
+  .gt-toast--top-center .gt-toast-enter-from,
+  .gt-toast--top-right .gt-toast-enter-from,
+  .gt-toast--top-left .gt-toast-leave-to,
+  .gt-toast--top-center .gt-toast-leave-to,
+  .gt-toast--top-right .gt-toast-leave-to {
+    transform: translateY(-8px) scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-toast-enter-active,
+    .gt-toast-leave-active {
+      transition: none !important;
+    }
+  }
+}

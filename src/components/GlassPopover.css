@@ -1,0 +1,54 @@
+@layer glasstora {
+  .gt-popover__anchor {
+    display: inline-flex;
+  }
+
+  .gt-popover__trigger {
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .gt-popover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 55;
+    min-width: 12rem;
+    max-width: min(26rem, calc(100vw - 32px));
+    padding: 12px 14px;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-sm);
+    line-height: 1.6;
+    color: var(--gt-fg-muted);
+    outline: none;
+    will-change: transform;
+  }
+
+  .gt-popover:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  /* Only opacity moves. The transform belongs to useFloating, and animating it
+     here would fight the positioner for the same property. */
+  .gt-popover-enter-active,
+  .gt-popover-leave-active {
+    transition: opacity var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-popover-enter-from,
+  .gt-popover-leave-to {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-popover-enter-active,
+    .gt-popover-leave-active {
+      transition: none;
+    }
+  }
+}

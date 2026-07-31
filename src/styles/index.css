@@ -1,3 +1,9 @@
+/* Declared before anything else so the layer takes its position from the base
+   sheet, never from whichever component stylesheet a consumer happens to load
+   first. An application that wants glasstora somewhere else in the cascade can
+   still say so with its own @layer statement before importing. */
+@layer glasstora;
+
 @import './props.css';
 @import './tokens.css';
 @import './base.css';

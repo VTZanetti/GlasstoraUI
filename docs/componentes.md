@@ -187,11 +187,11 @@ A imagem é dessaturada, porque a biblioteca inteira é monocromática por defin
 
 ## GlassSpinner
 
-| Propriedade | Tipo                   | Padrão | Descrição                                   |
-| ----------- | ---------------------- | ------ | ------------------------------------------- |
-| `size`      | `'sm' \| 'md' \| 'lg'` | `'md'` | Tamanho                                     |
-| `speed`     | `number`               | `80`   | Milissegundos por quadro                    |
-| `label`     | `string`               | `''`   | Nome acessível. Sem ele, fica `aria-hidden` |
+| Propriedade | Tipo                   | Padrão | Descrição                                       |
+| ----------- | ---------------------- | ------ | ----------------------------------------------- |
+| `size`      | `'sm' \| 'md' \| 'lg'` | `'md'` | Tamanho                                         |
+| `speed`     | `number`               | `12`   | Quadros por segundo. Mais alto gira mais rápido |
+| `label`     | `string`               | `''`   | Nome acessível. Sem ele, fica `aria-hidden`     |
 
 Com `prefers-reduced-motion` ativo, a animação não roda. A preferência é observada em tempo real, não
 lida uma vez na montagem.
@@ -256,15 +256,21 @@ gatilho sair de um container com rolagem própria.
 
 ## GlassProgress
 
-| Propriedade     | Tipo                   | Padrão   | Descrição                             |
-| --------------- | ---------------------- | -------- | ------------------------------------- |
-| `value`         | `number`               | `0`      | Valor atual                           |
-| `max`           | `number`               | `100`    | Valor máximo                          |
-| `mode`          | `'line' \| 'ascii'`    | `'line'` | Barra fina ou blocos de texto         |
-| `cols`          | `number`               | `20`     | Número de colunas no modo `ascii`     |
-| `showValue`     | `boolean`              | `false`  | Exibe o percentual                    |
-| `indeterminate` | `boolean`              | `false`  | Animação contínua, sem valor definido |
-| `size`          | `'sm' \| 'md' \| 'lg'` | `'md'`   | Espessura da barra                    |
+| Propriedade     | Tipo                                      | Padrão   | Descrição                                    |
+| --------------- | ----------------------------------------- | -------- | -------------------------------------------- |
+| `value`         | `number`                                  | `0`      | Valor atual                                  |
+| `max`           | `number`                                  | `100`    | Valor máximo                                 |
+| `mode`          | `'line' \| 'ascii' \| 'blocks' \| 'dots'` | `'line'` | Ver abaixo                                   |
+| `cols`          | `number`                                  | `20`     | Células nos modos `ascii`, `blocks` e `dots` |
+| `showValue`     | `boolean`                                 | `false`  | Exibe o percentual                           |
+| `indeterminate` | `boolean`                                 | `false`  | Animação contínua, sem valor definido        |
+| `size`          | `'sm' \| 'md' \| 'lg'`                    | `'md'`   | Espessura da barra                           |
+
+São quatro modos: `line` é uma barra contínua fina; `ascii` escreve a barra em caracteres de bloco,
+no espírito das barras de instalação de pacotes; `blocks` é a mesma leitura célula a célula, mas
+desenhada em vez de escrita; e `dots` é a mesma coisa na densidade de uma régua braille. Os três
+modos de célula compartilham a varredura do estado indeterminado, então a banda percorre a barra do
+mesmo jeito em todos.
 
 ## GlassModal
 
@@ -306,6 +312,236 @@ até o componente ser remontado.
 
 Com `prefers-reduced-motion` ativo, o texto aparece de uma vez. O conteúdo completo também fica
 disponível para leitores de tela enquanto a versão animada é ignorada por eles.
+
+## GlassRadioGroup e GlassRadio
+
+O grupo é dono do valor e do nome; o rádio só sabe quanto vale. Por isso o `v-model` fica no grupo e
+o `GlassField` em volta descreve o grupo, não cada opção.
+
+| Propriedade   | Tipo                         | Padrão       | Descrição                        |
+| ------------- | ---------------------------- | ------------ | -------------------------------- |
+| `modelValue`  | `string \| number`           | indefinido   | Opção escolhida                  |
+| `name`        | `string`                     | `''`         | Nome compartilhado no formulário |
+| `orientation` | `'horizontal' \| 'vertical'` | `'vertical'` | Eixo das setas                   |
+| `disabled`    | `boolean`                    | `false`      | Desativa o grupo inteiro         |
+| `size`        | `'sm' \| 'md' \| 'lg'`       | `'md'`       | Tamanho, herdado pelos rádios    |
+
+O `GlassRadio` recebe apenas `value` (obrigatório), `disabled` e `id`.
+
+Eventos do grupo: `update:modelValue` e `change`. Slot padrão do grupo: os rádios. Slot padrão do
+rádio: o rótulo ao lado do ponto.
+
+O grupo tem uma parada de tabulação só, que fica na opção marcada. As setas movem **e** selecionam,
+que é o comportamento de um grupo de rádio; `Home` e `End` vão às pontas e opções desativadas são
+puladas.
+
+## GlassSlider
+
+| Propriedade   | Tipo                        | Padrão     | Descrição                                     |
+| ------------- | --------------------------- | ---------- | --------------------------------------------- |
+| `modelValue`  | `number`                    | `min`      | Valor                                         |
+| `min`         | `number`                    | `0`        | Limite inferior                               |
+| `max`         | `number`                    | `100`      | Limite superior                               |
+| `step`        | `number`                    | `1`        | Granularidade                                 |
+| `showValue`   | `boolean`                   | `false`    | Imprime o valor ao lado da trilha             |
+| `formatValue` | `(value: number) => string` | indefinido | Formata o valor e alimenta o `aria-valuetext` |
+| `disabled`    | `boolean`                   | `false`    | Desativa o controle                           |
+| `label`       | `string`                    | `''`       | Nome acessível, quando nada aponta para ele   |
+
+Eventos: `update:modelValue` a cada movimento e `change` ao soltar.
+
+Teclado: setas andam um passo, `PageUp` e `PageDown` andam dez, `Home` e `End` vão aos limites. O
+valor é sempre arredondado às casas decimais do próprio `step`, então um passo de `0.1` não produz
+`0.30000000000000004`.
+
+## GlassSelect
+
+| Propriedade   | Tipo                       | Padrão           | Descrição                                    |
+| ------------- | -------------------------- | ---------------- | -------------------------------------------- |
+| `modelValue`  | `string \| number \| null` | `null`           | Valor escolhido                              |
+| `options`     | `GlassSelectOption[]`      | obrigatório      | `{ label, value, disabled? }`                |
+| `placeholder` | `string`                   | `'Select…'`      | Texto sem escolha                            |
+| `placement`   | `GlassPlacement`           | `'bottom-start'` | Lado preferido do painel                     |
+| `disabled`    | `boolean`                  | `false`          | Desativa o controle                          |
+| `name`        | `string`                   | `''`             | Cria um campo oculto para formulários comuns |
+
+Eventos: `update:modelValue`, `change`, `open`, `close`. Slots: `selected` para o valor no gatilho e
+`option` para cada linha da lista.
+
+O painel é teleportado para o `body` e posicionado pela camada flutuante da biblioteca, que se
+inverte quando não cabe. A navegação é por `aria-activedescendant`: o foco fica no gatilho e a lista
+é apontada por referência, o que evita tirar o foco de um diálogo em que o select esteja. Digitar
+salta para a opção correspondente.
+
+## GlassCombobox
+
+Tudo do `GlassSelect`, com o gatilho trocado por um campo de texto que filtra a lista.
+
+| Propriedade        | Tipo                         | Padrão         | Descrição                          |
+| ------------------ | ---------------------------- | -------------- | ---------------------------------- |
+| `filter`           | `(query, option) => boolean` | substring      | Substitui a busca padrão           |
+| `noResultsLabel`   | `string`                     | `'No results'` | Texto quando nada casa             |
+| `allowCustomValue` | `boolean`                    | `false`        | Aceita o texto digitado como valor |
+
+A busca padrão ignora maiúsculas e acentos, então `acao` encontra `ação`. O `placeholder` começa em
+`'Search…'`, e não em `'Select…'`, porque aqui se digita.
+
+## GlassMenu
+
+| Propriedade  | Tipo               | Padrão           | Descrição                                                        |
+| ------------ | ------------------ | ---------------- | ---------------------------------------------------------------- |
+| `modelValue` | `boolean`          | indefinido       | Aberto. Sem ele o menu se controla                               |
+| `items`      | `GlassMenuEntry[]` | obrigatório      | `{ label, value?, disabled?, danger? }` ou `{ separator: true }` |
+| `placement`  | `GlassPlacement`   | `'bottom-start'` | Lado preferido                                                   |
+
+Eventos: `update:modelValue`, `select` com o item, `open`, `close`. Slots: `trigger` com
+`{ open, toggle, attrs }` e `item` para cada entrada. Expõe `open`, `setOpen` e `toggle`.
+
+Aqui o foco entra no painel, que é o padrão de menu. Seta para baixo no gatilho abre e foca o
+primeiro item; escolher algo ou apertar `Escape` fecha e devolve o foco ao gatilho.
+
+## GlassTabs e GlassTabPanel
+
+| Propriedade  | Tipo                      | Padrão        | Descrição                       |
+| ------------ | ------------------------- | ------------- | ------------------------------- |
+| `modelValue` | `string`                  | primeira aba  | Aba ativa                       |
+| `tabs`       | `GlassTabItem[]`          | obrigatório   | `{ label, value, disabled? }`   |
+| `activation` | `'automatic' \| 'manual'` | `'automatic'` | Se as setas já selecionam       |
+| `label`      | `string`                  | `'Tabs'`      | Nome acessível da lista de abas |
+
+O `GlassTabPanel` recebe só `value`, que casa com o da aba. Os ids dos dois lados são derivados do
+mesmo valor, então eles se encontram sem registro bidirecional, e um valor com espaço ou acento é
+higienizado antes de virar id.
+
+Use `activation: 'manual'` quando o conteúdo do painel for caro de renderizar: as setas movem o foco
+e só `Enter` ou espaço trocam a aba.
+
+## GlassAccordion
+
+| Propriedade  | Tipo                   | Padrão      | Descrição                        |
+| ------------ | ---------------------- | ----------- | -------------------------------- |
+| `modelValue` | `string \| string[]`   | fechado     | Seção aberta, ou lista delas     |
+| `items`      | `GlassAccordionItem[]` | obrigatório | `{ value, title, disabled? }`    |
+| `multiple`   | `boolean`              | `false`     | Permite mais de uma seção aberta |
+
+Eventos: `update:modelValue` e `change`. Slots: um por item, nomeado pelo `value`, com `content` e
+`title` como alternativas genéricas.
+
+A altura anima por `grid-template-rows`, sem medir nada em JavaScript.
+
+## GlassBreadcrumb
+
+| Propriedade   | Tipo                    | Padrão             | Descrição                                     |
+| ------------- | ----------------------- | ------------------ | --------------------------------------------- |
+| `items`       | `GlassBreadcrumbItem[]` | obrigatório        | `{ label, href? }`                            |
+| `maxItems`    | `number`                | `0`                | Colapsa o meio acima disso. `0` nunca colapsa |
+| `separator`   | `string`                | `'/'`              | Separador                                     |
+| `expandLabel` | `string`                | `'Show all pages'` | Nome do botão de reticências                  |
+
+Slots: `item` com `{ item, index, last }`, para injetar um `RouterLink`, e `separator`.
+
+O colapso é por contagem, não por medição: uma trilha que decide pela largura teria que renderizar
+duas vezes e a resposta mudaria com o contêiner. O último item nunca é escondido, e o
+`aria-current="page"` fica no `<li>`, que é o único lugar que sobrevive à troca do conteúdo pelo slot.
+
+## GlassPagination
+
+| Propriedade     | Tipo                       | Padrão           | Descrição                              |
+| --------------- | -------------------------- | ---------------- | -------------------------------------- |
+| `modelValue`    | `number`                   | `1`              | Página atual, contando de um           |
+| `pageCount`     | `number`                   | obrigatório      | Total de páginas                       |
+| `siblingCount`  | `number`                   | `1`              | Páginas mantidas de cada lado da atual |
+| `boundaryCount` | `number`                   | `1`              | Páginas mantidas em cada ponta         |
+| `pageLabel`     | `(page: number) => string` | o próprio número | Nome acessível de cada botão           |
+
+Eventos: `update:modelValue` e `change`.
+
+As reticências são um `<span>` inerte, não um botão, e nunca aparecem no lugar de uma única página:
+onde o salto cobriria só um número, o número é mostrado.
+
+## GlassTable
+
+| Propriedade    | Tipo                        | Padrão      | Descrição                                   |
+| -------------- | --------------------------- | ----------- | ------------------------------------------- |
+| `columns`      | `GlassTableColumn[]`        | obrigatório | `{ key, label, sortable?, align?, width? }` |
+| `rows`         | `Record<string, unknown>[]` | obrigatório | Os dados                                    |
+| `rowKey`       | `string \| (row) => string` | índice      | O que identifica uma linha                  |
+| `sort`         | `GlassSortState \| null`    | `null`      | Use `v-model:sort` para ordenar você mesmo  |
+| `stickyHeader` | `boolean`                   | `false`     | Cabeçalho fixo. Precisa de `maxHeight`      |
+| `emptyLabel`   | `string`                    | `'No rows'` | Texto do estado vazio                       |
+
+Eventos: `update:sort` e `row-click`. Slots: `header-[key]`, `cell-[key]` com `{ row, value }` e
+`empty`.
+
+Se você passar `sort`, as linhas são renderizadas na ordem recebida e a ordenação é sua. Sem a
+propriedade, a tabela ordena sozinha, com `sortFn` se houver.
+
+O contêiner que rola é interno de propósito: o anel especular do vidro sai um pixel da caixa e um
+contêiner com rolagem o recortaria.
+
+## GlassDrawer
+
+Irmão do `GlassModal`, encostado numa borda.
+
+| Propriedade  | Tipo                                     | Padrão      | Descrição                                   |
+| ------------ | ---------------------------------------- | ----------- | ------------------------------------------- |
+| `modelValue` | `boolean`                                | obrigatório | Aberto                                      |
+| `side`       | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'`   | Borda em que encosta                        |
+| `size`       | `string`                                 | `'20rem'`   | Largura nos lados, altura em cima e embaixo |
+| `closeLabel` | `string`                                 | `'Close'`   | Nome acessível do botão de fechar           |
+
+Eventos: `update:modelValue` e `close`. Slots: `header`, padrão e `footer`.
+
+Drawer e modal ficam na mesma camada e empilham por ordem de montagem. O `Escape` sempre pertence ao
+que foi aberto por último, e a trava de rolagem conta quem a segura, então fechar o de cima não
+devolve a rolagem enquanto o de baixo estiver aberto.
+
+## GlassToast e useToast
+
+A fila vive em escopo de módulo, como o motor de luz. Isso quer dizer que um aviso pode ser disparado
+de qualquer lugar, inclusive de fora de um componente, sem provider nenhum.
+
+Monte o ponto de saída uma vez, perto da raiz:
+
+```vue
+<GlassToast position="bottom-right" />
+```
+
+E dispare de onde precisar:
+
+```ts
+import { useToast } from 'glasstora'
+
+const toast = useToast()
+toast.show({ message: 'projeto salvo', variant: 'success' })
+```
+
+| Propriedade  | Tipo                 | Padrão           | Descrição                                 |
+| ------------ | -------------------- | ---------------- | ----------------------------------------- |
+| `position`   | `GlassToastPosition` | `'bottom-right'` | Canto em que a fila aparece               |
+| `max`        | `number`             | `0`              | Limite de avisos visíveis. `0` não limita |
+| `closeLabel` | `string`             | `'Dismiss'`      | Nome acessível do botão de fechar         |
+
+Opções de `show()`: `{ title?, message, variant?, duration?, closable? }`. A duração é em
+milissegundos, e `0` mantém o aviso até alguém dispensá-lo. Passar o ponteiro sobre a fila pausa a
+contagem de todos e guarda quanto faltava para cada um, em vez de reiniciar.
+
+`useToast()` devolve `{ toasts, show, dismiss, clear }`.
+
+## GlassCommandPalette
+
+| Propriedade      | Tipo             | Padrão         | Descrição                                                |
+| ---------------- | ---------------- | -------------- | -------------------------------------------------------- |
+| `modelValue`     | `boolean`        | indefinido     | Aberta. Sem ele ela se controla                          |
+| `commands`       | `GlassCommand[]` | obrigatório    | `{ id, label, keywords?, shortcut?, group?, disabled? }` |
+| `hotkey`         | `string`         | `'mod+k'`      | Atalho que abre. `''` desliga                            |
+| `noResultsLabel` | `string`         | `'No results'` | Texto quando nada casa                                   |
+
+Eventos: `update:modelValue` e `select` com o comando.
+
+`mod` é a tecla Meta no Apple e Control no resto. A paleta usa o `GlassModal` por dentro, então herda
+o aprisionamento de foco, a trava de rolagem e o vidro do painel. A busca ignora maiúsculas e
+acentos, e olha tanto o rótulo quanto as palavras-chave.
 
 ## useGlassLight
 

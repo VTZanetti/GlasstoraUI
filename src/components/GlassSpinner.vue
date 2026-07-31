@@ -5,14 +5,17 @@ import type { GlassSpinnerProps } from '../types'
 
 const props = withDefaults(defineProps<GlassSpinnerProps>(), {
   size: 'md',
-  speed: 80,
+  speed: 12,
   label: '',
 })
 
 /** Braille cell patterns, which read as a rotation in a monospace font. */
 const FRAMES = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
 
-const { tick } = useTicker({ interval: () => props.speed })
+// Frames per second rather than the delay between them, so turning the number
+// up speeds the spinner up, which is what the name promises. The ticker floors
+// the result at one animation frame, so an absurd rate costs nothing extra.
+const { tick } = useTicker({ interval: () => 1000 / Math.max(1, props.speed) })
 const glyph = computed(() => FRAMES[tick.value % FRAMES.length])
 
 defineExpose({ frames: FRAMES })
@@ -29,24 +32,4 @@ defineExpose({ frames: FRAMES })
   >
 </template>
 
-<style>
-@layer glasstora {
-  .gt-spinner {
-    display: inline-block;
-    min-width: 1ch;
-    font-family: var(--gt-font-mono);
-    color: var(--gt-fg);
-    line-height: 1;
-  }
-
-  .gt-spinner--sm {
-    font-size: var(--gt-text-sm);
-  }
-  .gt-spinner--md {
-    font-size: var(--gt-text-md);
-  }
-  .gt-spinner--lg {
-    font-size: var(--gt-text-lg);
-  }
-}
-</style>
+<style src="./GlassSpinner.css"></style>

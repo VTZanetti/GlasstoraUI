@@ -214,16 +214,4 @@ provide(configKey, config)
   </div>
 </template>
 
-<style>
-@layer glasstora {
-  /* The refraction filter is appended to the body by refractDefs.ts. Never use
-     display:none here: Chromium ignores filter references that live inside a
-     hidden subtree. */
-  .gt-defs {
-    position: fixed;
-    width: 0;
-    height: 0;
-    pointer-events: none;
-  }
-}
-</style>
+<style src="./GlassProvider.css"></style>

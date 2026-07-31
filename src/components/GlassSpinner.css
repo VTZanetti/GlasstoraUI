@@ -1,0 +1,19 @@
+@layer glasstora {
+  .gt-spinner {
+    display: inline-block;
+    min-width: 1ch;
+    font-family: var(--gt-font-mono);
+    color: var(--gt-fg);
+    line-height: 1;
+  }
+
+  .gt-spinner--sm {
+    font-size: var(--gt-text-sm);
+  }
+  .gt-spinner--md {
+    font-size: var(--gt-text-md);
+  }
+  .gt-spinner--lg {
+    font-size: var(--gt-text-lg);
+  }
+}

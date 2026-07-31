@@ -86,6 +86,31 @@ describe('GlassProgress', () => {
     wrapper.unmount()
   })
 
+  it('draws one cell per column in the blocks and dots modes', () => {
+    for (const mode of ['blocks', 'dots'] as const) {
+      const wrapper = mount(GlassProgress, { props: { mode, cols: 10, value: 50 } })
+      expect(wrapper.findAll('.gt-progress__cell'), mode).toHaveLength(10)
+      // Half the value fills half the cells, at the brightest level.
+      expect(wrapper.findAll('.gt-progress__cell--3'), mode).toHaveLength(5)
+      wrapper.unmount()
+    }
+  })
+
+  it('sweeps a band across the cells while indeterminate', async () => {
+    const wrapper = mount(GlassProgress, {
+      props: { mode: 'blocks', cols: 20, indeterminate: true },
+    })
+    const lit = () => wrapper.findAll('.gt-progress__cell--3').map((c) => c.attributes('class'))
+    const first = wrapper.html()
+
+    vi.advanceTimersByTime(400)
+    await nextTick()
+
+    expect(lit().length).toBeGreaterThan(0)
+    expect(wrapper.html()).not.toBe(first)
+    wrapper.unmount()
+  })
+
   it('sweeps a graded band across the ascii track while indeterminate', async () => {
     const wrapper = mount(GlassProgress, {
       props: { mode: 'ascii', indeterminate: true, cols: 20 },
@@ -135,8 +160,9 @@ describe('GlassProgress', () => {
 })
 
 describe('GlassSpinner', () => {
-  it('cycles its frames on the requested interval', async () => {
-    const wrapper = mount(GlassSpinner, { props: { speed: 50 } })
+  it('cycles its frames at the requested rate', async () => {
+    // Twenty frames a second is one every fifty milliseconds.
+    const wrapper = mount(GlassSpinner, { props: { speed: 20 } })
     const first = wrapper.text()
     vi.advanceTimersByTime(50)
     await nextTick()
@@ -144,9 +170,24 @@ describe('GlassSpinner', () => {
     wrapper.unmount()
   })
 
+  it('spins faster the higher the speed, not slower', async () => {
+    const slow = mount(GlassSpinner, { props: { speed: 4 } })
+    const slowFirst = slow.text()
+
+    vi.advanceTimersByTime(50)
+    await nextTick()
+    // Four frames a second has not reached its second frame yet.
+    expect(slow.text()).toBe(slowFirst)
+
+    vi.advanceTimersByTime(250)
+    await nextTick()
+    expect(slow.text()).not.toBe(slowFirst)
+    slow.unmount()
+  })
+
   it('holds still under prefers reduced motion', async () => {
     setMediaQuery('(prefers-reduced-motion: reduce)', true)
-    const wrapper = mount(GlassSpinner, { props: { speed: 50 } })
+    const wrapper = mount(GlassSpinner, { props: { speed: 20 } })
     const first = wrapper.text()
     vi.advanceTimersByTime(500)
     await nextTick()

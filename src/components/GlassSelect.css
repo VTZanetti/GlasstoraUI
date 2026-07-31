@@ -1,0 +1,152 @@
+@layer glasstora {
+  .gt-select {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .gt-select__trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-width: 10rem;
+    padding: 8px 12px;
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    border: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+    border-radius: var(--gt-radius-sm);
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg);
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color var(--gt-dur-1) var(--gt-ease),
+      border-color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-select__trigger--sm {
+    padding: 5px 9px;
+    font-size: var(--gt-text-sm);
+  }
+  .gt-select__trigger--lg {
+    padding: 11px 15px;
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-select__trigger:hover:not(:disabled) {
+    border-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-select__trigger--empty {
+    color: var(--gt-fg-faint);
+  }
+
+  .gt-select__trigger:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gt-select__trigger:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  .gt-select__trigger[aria-invalid='true'] {
+    border-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-select__value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .gt-select__caret {
+    flex-shrink: 0;
+    font-size: 0.7em;
+    color: var(--gt-fg-faint);
+    transition: transform var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-select__trigger[aria-expanded='true'] .gt-select__caret {
+    transform: rotate(180deg);
+  }
+
+  .gt-select__list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 55;
+    max-height: 16rem;
+    padding: 4px;
+    overflow-y: auto;
+    /* A label longer than the trigger would otherwise hand the panel a
+       horizontal scrollbar. It is cut with an ellipsis instead. */
+    overflow-x: hidden;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+  }
+
+  .gt-select__option {
+    padding: 7px 10px;
+    border-radius: var(--gt-radius-sm);
+    color: var(--gt-fg-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gt-select__option--active {
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    color: var(--gt-fg);
+  }
+
+  .gt-select__option--on {
+    color: var(--gt-fg);
+  }
+
+  .gt-select__option[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* The panel unrolls from the edge that touches the trigger.
+     Deliberately not a transform: the floating layer writes translate3d on this
+     same element every frame, and a transition on transform replaces it, which
+     throws the panel to the corner of the viewport for the length of the
+     animation. Clipping is outside that chain, so the two do not collide. */
+  .gt-select-enter-active,
+  .gt-select-leave-active {
+    transition:
+      opacity var(--gt-dur-1) var(--gt-ease),
+      clip-path var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-select-enter-from,
+  .gt-select-leave-to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .gt-select-enter-to,
+  .gt-select-leave-from {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* Flipped above the trigger, the shared edge is the bottom one. */
+  .gt-select__list--top.gt-select-enter-from,
+  .gt-select__list--top.gt-select-leave-to {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-select__trigger,
+    .gt-select__caret,
+    .gt-select-enter-active,
+    .gt-select-leave-active {
+      transition: none;
+    }
+  }
+}

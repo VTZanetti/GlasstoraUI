@@ -10,16 +10,14 @@
  * one light source.
  */
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { GlassBadge, GlassSurface, configureLight, useGlassLight, vGlass } from 'glasstora'
+import { GlassSurface, configureLight, useGlassLight, vGlass } from 'glasstora'
 import RangeControl from '../components/RangeControl.vue'
-import ToggleControl from '../components/ToggleControl.vue'
 
 const light = useGlassLight()
 
 const falloff = ref(900)
 const height = ref(520)
 const gain = ref(100)
-const stress = ref(false)
 
 function applyTuning() {
   configureLight({ falloff: falloff.value, height: height.value, gain: gain.value / 100 })
@@ -66,7 +64,6 @@ onBeforeUnmount(() => {
   configureLight({ falloff: 900, height: 520, gain: 1 })
 })
 
-const stressCount = 60
 const position = computed(() => `${Math.round(light.x.value)}, ${Math.round(light.y.value)}`)
 </script>
 
@@ -105,7 +102,6 @@ const position = computed(() => `${Math.round(light.x.value)}, ${Math.round(ligh
         :max="300"
         @update:model-value="applyTuning"
       />
-      <ToggleControl v-model="stress" label="modo estresse" />
     </div>
 
     <dl class="inspector__readout">
@@ -143,19 +139,6 @@ const position = computed(() => `${Math.round(light.x.value)}, ${Math.round(ligh
           <div ref="probeRef" v-glass.interactive class="inspector__panel">
             <span class="inspector__panelLabel">v-glass</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="stress" class="inspector__stress">
-      <p class="inspector__caption">
-        {{ stressCount }} superfícies ao mesmo tempo. Fora do alcance da luz o registro escreve
-        apenas a energia e para, então o custo por quadro acompanha a área iluminada, não a
-        quantidade de vidro na página.
-      </p>
-      <div class="inspector__stressGrid">
-        <div v-for="i in stressCount" :key="i" v-glass class="inspector__chip">
-          <GlassBadge :dot="false">{{ i }}</GlassBadge>
         </div>
       </div>
     </div>
@@ -271,20 +254,5 @@ const position = computed(() => `${Math.round(light.x.value)}, ${Math.round(ligh
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gt-fg-faint);
-}
-
-.inspector__stress {
-  margin-top: 24px;
-}
-
-.inspector__stressGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.inspector__chip {
-  padding: 6px;
-  border-radius: 8px;
 }
 </style>

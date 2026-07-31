@@ -1,0 +1,136 @@
+@layer glasstora {
+  .gt-combobox {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  .gt-combobox__input {
+    width: 100%;
+    min-width: 10rem;
+    padding: 8px 12px;
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    border: 1px solid rgb(var(--gt-line-tint) / var(--gt-line-alpha));
+    border-radius: var(--gt-radius-sm);
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    color: var(--gt-fg);
+    transition:
+      background-color var(--gt-dur-1) var(--gt-ease),
+      border-color var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-combobox__input--sm {
+    padding: 5px 9px;
+    font-size: var(--gt-text-sm);
+  }
+  .gt-combobox__input--lg {
+    padding: 11px 15px;
+    font-size: var(--gt-text-lg);
+  }
+
+  .gt-combobox__input::placeholder {
+    color: var(--gt-fg-faint);
+  }
+
+  .gt-combobox__input:hover:not(:disabled) {
+    border-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-combobox__input:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .gt-combobox__input:focus-visible {
+    outline: 1px solid rgb(var(--gt-line-tint) / var(--gt-focus-alpha));
+    outline-offset: 2px;
+  }
+
+  /* The invalid state is monochrome, so it dashes the border instead of reddening it. */
+  .gt-combobox__input[aria-invalid='true'] {
+    border-style: dashed;
+    border-color: rgb(var(--gt-line-tint) / var(--gt-line-strong-alpha));
+  }
+
+  .gt-combobox__list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 55;
+    max-height: 16rem;
+    padding: 4px;
+    overflow-y: auto;
+    /* A label longer than the input would otherwise hand the panel a
+       horizontal scrollbar. It is cut with an ellipsis instead. */
+    overflow-x: hidden;
+    font-family: var(--gt-font-mono);
+    font-size: var(--gt-text-md);
+    will-change: transform;
+  }
+
+  .gt-combobox__option {
+    padding: 7px 10px;
+    border-radius: var(--gt-radius-sm);
+    color: var(--gt-fg-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gt-combobox__option--active {
+    background: rgb(var(--gt-line-tint) / var(--gt-fill-alpha));
+    color: var(--gt-fg);
+  }
+
+  .gt-combobox__option--on {
+    color: var(--gt-fg);
+  }
+
+  .gt-combobox__option[aria-disabled='true'] {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .gt-combobox__empty {
+    padding: 7px 10px;
+    color: var(--gt-fg-faint);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* The panel unrolls from the edge that touches the input. Never a transform:
+     that belongs to useFloating, which rewrites it every frame, and a
+     transition on it would throw the panel to the corner of the viewport. */
+  .gt-combobox-enter-active,
+  .gt-combobox-leave-active {
+    transition:
+      opacity var(--gt-dur-1) var(--gt-ease),
+      clip-path var(--gt-dur-1) var(--gt-ease);
+  }
+
+  .gt-combobox-enter-from,
+  .gt-combobox-leave-to {
+    opacity: 0;
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .gt-combobox-enter-to,
+  .gt-combobox-leave-from {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .gt-combobox__list--top.gt-combobox-enter-from,
+  .gt-combobox__list--top.gt-combobox-leave-to {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gt-combobox__input,
+    .gt-combobox-enter-active,
+    .gt-combobox-leave-active {
+      transition: none;
+    }
+  }
+}
