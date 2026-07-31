@@ -1,0 +1,59 @@
+# Publishes to npm when a version tag is pushed.
+#
+#   1. main is green and the version in package.json is the one being released
+#   2. git tag -a v0.3.0 -m "glasstora 0.3.0" && git push origin main v0.3.0
+#   3. this runs, and npm view glasstora shows the release with its provenance
+#
+# It repeats the CI checks rather than depending on them: a tag push does not
+# trigger ci.yml, and nothing should reach the registry unverified.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  # Required to mint the provenance attestation.
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          # Without this the auth token has no registry to authenticate against.
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      # A tag that disagrees with the manifest would publish the wrong version
+      # under the right name, which no later step could undo.
+      - name: Check the tag against the manifest
+        run: |
+          manifest="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$manifest" ]; then
+            echo "tag $GITHUB_REF_NAME does not match package.json $manifest"
+            exit 1
+          fi
+
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run build
+      - run: npm run check:dist
+      - run: npx publint
+
+      - name: Show what is about to be published
+        run: npm pack --dry-run
+
+      # Built and checked above, so the prepublishOnly script would only repeat
+      # all of it. check:dist immediately before this is what proves dist is real.
+      - run: npm publish --provenance --access public --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
