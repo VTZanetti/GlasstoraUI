@@ -97,6 +97,19 @@ export default {
 
 O módulo `glasstora/resolver` roda dentro do bundler e não importa Vue nem a folha de estilo.
 
+Além do componente, o resolver importa o estilo dele: a base compartilhada mais a folha daquele
+componente. Uma página com três componentes carrega quatro arquivos pequenos em vez do
+`style.css` inteiro, e você não escreve nenhum `import` de CSS. Não é preciso importar
+`glasstora/style.css` quando o resolver está em uso.
+
+| Opção    | Tipo                  | Padrão    | Descrição                                          |
+| -------- | --------------------- | --------- | -------------------------------------------------- |
+| `prefix` | `string`              | `'Glass'` | Prefixo usado nos templates                        |
+| `css`    | `'split' \| 'bundle'` | `'split'` | `'bundle'` volta a apontar tudo para o `style.css` |
+
+Use `css: 'bundle'` se o seu empacotador não resolver subcaminhos de `exports`, ou se você preferir
+uma única folha em cache.
+
 Para o autocomplete dos componentes em templates que não os importam, referencie os tipos globais em
 algum `.d.ts` do seu projeto:
 
@@ -104,7 +117,7 @@ algum `.d.ts` do seu projeto:
 /// <reference types="glasstora/global" />
 ```
 
-Isso é opcional de propósito. Quem usa importações nomeadas não deveria ganhar vinte e um nomes no
+Isso é opcional de propósito. Quem usa importações nomeadas não deveria ganhar trinta e seis nomes no
 escopo de todo template.
 
 ## Motor de luz

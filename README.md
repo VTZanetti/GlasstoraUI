@@ -44,6 +44,10 @@ Importe a folha de estilo uma vez, no ponto de entrada da aplicação:
 import 'glasstora/style.css'
 ```
 
+Esse arquivo traz o catálogo inteiro. Se você usa o resolver de
+[auto-importação](./docs/composicao.md#auto-importacao), pode deixá-lo de fora: o resolver importa a
+base mais a folha de cada componente que a página realmente renderiza.
+
 Envolva a aplicação com o `GlassProvider`, que injeta o filtro de refração e liga o motor de luz:
 
 ```vue
@@ -84,6 +88,24 @@ import { GlassProvider, GlassButton, GlassTerminal } from 'glasstora'
 | `GlassPopover`  | Painel flutuante com fechamento por Esc e por clique fora        |
 | `GlassModal`    | Diálogo com teleporte para o body e foco preso                   |
 | `GlassTerminal` | Janela de terminal com efeito de digitação                       |
+
+E os quinze da 0.3.0:
+
+| Componente            | O que é                                                           |
+| --------------------- | ----------------------------------------------------------------- |
+| `GlassRadioGroup`     | Grupo de opções, dono do nome e do valor, com `GlassRadio` dentro |
+| `GlassSlider`         | Controle deslizante com teclado completo                          |
+| `GlassSelect`         | Lista suspensa em camada flutuante própria                        |
+| `GlassCombobox`       | O mesmo, filtrado pela digitação                                  |
+| `GlassMenu`           | Menu suspenso, com o foco entrando no painel                      |
+| `GlassTabs`           | Abas com ativação manual ou automática, e `GlassTabPanel`         |
+| `GlassAccordion`      | Seções recolhíveis, uma ou várias abertas                         |
+| `GlassBreadcrumb`     | Trilha que recolhe o meio quando fica longa                       |
+| `GlassPagination`     | Janela de páginas em volta da atual                               |
+| `GlassTable`          | Tabela com cabeçalho fixo, ordenação e estado vazio               |
+| `GlassDrawer`         | Painel lateral nos quatro lados                                   |
+| `GlassToast`          | Fila de avisos, disparada de qualquer lugar por `useToast()`      |
+| `GlassCommandPalette` | Busca sobre uma lista de ações, com atalho de teclado             |
 
 A referência completa de propriedades, eventos e slots está em
 [docs/componentes.md](./docs/componentes.md). Os tokens de tema estão em
