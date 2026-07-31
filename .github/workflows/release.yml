@@ -22,12 +22,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Deliberately without registry-url. It writes an .npmrc holding
+      # _authToken=${NODE_AUTH_TOKEN} and exports a placeholder for that
+      # variable, so npm authenticates with a token that was never real and the
+      # registry answers 404 instead of exchanging the OIDC one. The default
+      # registry is the one we want anyway.
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
-          # Without this the auth token has no registry to authenticate against.
-          registry-url: https://registry.npmjs.org
 
       - run: npm ci
 
@@ -52,9 +55,16 @@ jobs:
       - name: Show what is about to be published
         run: npm pack --dry-run
 
+      # Proves the OIDC exchange happened before anything is sent, since the
+      # failure mode otherwise is a bare 404 from the registry that reads like
+      # the package does not exist.
+      - name: Show the npm version and who it is publishing as
+        run: |
+          npm --version
+          npm whoami || echo "not authenticated yet, the exchange happens at publish"
+
       # Authenticated by the trusted publisher on npm, through the OIDC token
-      # the id-token permission above mints. There is no secret to hold: an
-      # empty NODE_AUTH_TOKEN would only get in the way of the exchange.
+      # the id-token permission above mints. There is no secret to hold.
       #
       # Built and checked above, so the prepublishOnly script would only repeat
       # all of it. check:dist immediately before this is what proves dist is real.
