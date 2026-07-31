@@ -34,6 +34,7 @@ export { default as GlassPopover } from './components/GlassPopover.vue'
 export { default as GlassModal } from './components/GlassModal.vue'
 export { default as GlassDrawer } from './components/GlassDrawer.vue'
 export { default as GlassToast } from './components/GlassToast.vue'
+export { default as GlassCommandPalette } from './components/GlassCommandPalette.vue'
 export { default as GlassTerminal } from './components/GlassTerminal.vue'
 
 export { useToast, type UseToastReturn, type ToastEntry } from './composables/useToast'
