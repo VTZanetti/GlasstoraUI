@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { GlassSwitch } from 'glasstora'
 
-defineProps<{ label: string; modelValue: boolean }>()
+defineProps<{ label: string; modelValue: boolean; disabled?: boolean }>()
 defineEmits<{ 'update:modelValue': [value: boolean] }>()
 </script>
 
@@ -9,6 +9,7 @@ defineEmits<{ 'update:modelValue': [value: boolean] }>()
   <GlassSwitch
     size="sm"
     :model-value="modelValue"
+    :disabled="disabled"
     @update:model-value="$emit('update:modelValue', $event)"
   >
     <span class="toggle__label">{{ label }}</span>
