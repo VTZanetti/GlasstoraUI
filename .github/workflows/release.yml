@@ -52,8 +52,10 @@ jobs:
       - name: Show what is about to be published
         run: npm pack --dry-run
 
+      # Authenticated by the trusted publisher on npm, through the OIDC token
+      # the id-token permission above mints. There is no secret to hold: an
+      # empty NODE_AUTH_TOKEN would only get in the way of the exchange.
+      #
       # Built and checked above, so the prepublishOnly script would only repeat
       # all of it. check:dist immediately before this is what proves dist is real.
       - run: npm publish --provenance --access public --ignore-scripts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
