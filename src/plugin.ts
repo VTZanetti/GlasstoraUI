@@ -12,6 +12,9 @@ import GlassTextarea from './components/GlassTextarea.vue'
 import GlassField from './components/GlassField.vue'
 import GlassCheckbox from './components/GlassCheckbox.vue'
 import GlassSwitch from './components/GlassSwitch.vue'
+import GlassRadio from './components/GlassRadio.vue'
+import GlassRadioGroup from './components/GlassRadioGroup.vue'
+import GlassSlider from './components/GlassSlider.vue'
 import GlassKbd from './components/GlassKbd.vue'
 import GlassBadge from './components/GlassBadge.vue'
 import GlassAvatar from './components/GlassAvatar.vue'
@@ -36,6 +39,9 @@ export const components: Record<string, Component> = {
   GlassField,
   GlassCheckbox,
   GlassSwitch,
+  GlassRadio,
+  GlassRadioGroup,
+  GlassSlider,
   GlassKbd,
   GlassBadge,
   GlassAvatar,
