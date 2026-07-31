@@ -1,32 +1,71 @@
-# Publishes to npm when a version tag is pushed.
+# Publishes to npm when a commit lands on main carrying a version the registry
+# does not have yet.
 #
-#   1. main is green and the version in package.json is the one being released
-#   2. git tag -a v0.3.0 -m "glasstora 0.3.0" && git push origin main v0.3.0
-#   3. this runs, and npm view glasstora shows the release with its provenance
+#   1. bump the version in package.json inside the pull request
+#   2. merge it
+#   3. this sees the version is new, verifies it, publishes, and tags the commit
 #
-# It repeats the CI checks rather than depending on them: a tag push does not
-# trigger ci.yml, and nothing should reach the registry unverified.
+# The manifest is what declares a release, so a merge that leaves the version
+# alone stops at the gate and costs nothing. The checks are repeated here rather
+# than taken from ci.yml, which runs on the same event but as a separate job:
+# nothing should reach the registry unverified from inside the job publishing it.
 name: Release
 
 on:
   push:
-    tags: ['v*']
+    branches: [main]
 
 permissions:
   contents: read
-  # Required to mint the provenance attestation.
-  id-token: write
+
+# Two merges close together would otherwise both look at the registry before
+# either had published, and race for the same version.
+concurrency:
+  group: release
+  cancel-in-progress: false
 
 jobs:
-  release:
+  # Kept apart from the release itself so the ordinary merge, which is every
+  # merge that is not a release, pays for a checkout and one registry query.
+  gate:
     runs-on: ubuntu-latest
+    outputs:
+      new: ${{ steps.check.outputs.new }}
+      version: ${{ steps.check.outputs.version }}
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+
+      - name: Compare the manifest against the registry
+        id: check
+        run: |
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if npm view "glasstora@$version" version >/dev/null 2>&1; then
+            echo "new=false" >> "$GITHUB_OUTPUT"
+            echo "glasstora@$version is already on the registry. Nothing to release."
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
+            echo "glasstora@$version is not on the registry. Releasing it."
+          fi
+
+  release:
+    needs: gate
+    if: needs.gate.outputs.new == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      # Write only to record the tag, and only once the publish has succeeded.
+      contents: write
+      # Required to mint the OIDC token the trusted publisher authenticates
+      # with, and the provenance attestation.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+
       # registry-url is what tells npm which registry to run the OIDC exchange
-      # against, so it has to stay. Version 4 of this action also exported a
-      # placeholder NODE_AUTH_TOKEN alongside it, which npm found, used, and got
-      # a 404 for; v7 leaves the exchange alone. NODE_AUTH_TOKEN is set nowhere
-      # in this file on purpose.
+      # against, so it has to stay.
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
@@ -51,16 +90,6 @@ jobs:
 
       - run: npm ci
 
-      # A tag that disagrees with the manifest would publish the wrong version
-      # under the right name, which no later step could undo.
-      - name: Check the tag against the manifest
-        run: |
-          manifest="v$(node -p "require('./package.json').version")"
-          if [ "$GITHUB_REF_NAME" != "$manifest" ]; then
-            echo "tag $GITHUB_REF_NAME does not match package.json $manifest"
-            exit 1
-          fi
-
       - run: npm run lint
       - run: npm run format:check
       - run: npm run typecheck
@@ -84,3 +113,17 @@ jobs:
       # Built and checked above, so the prepublishOnly script would only repeat
       # all of it. check:dist immediately before this is what proves dist is real.
       - run: npm publish --provenance --access public --ignore-scripts
+
+      # A tag is the only thing in the repository itself that says which commit
+      # became which version. The gate proved this version was absent from the
+      # registry, so a tag of that name can only be marking an attempt that
+      # never shipped, and moving it here corrects the record rather than
+      # losing anything.
+      - name: Record what shipped
+        env:
+          VERSION: ${{ needs.gate.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -f -a "v$VERSION" -m "glasstora $VERSION"
+          git push -f origin "v$VERSION"
