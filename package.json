@@ -1,6 +1,6 @@
 {
   "name": "glasstora",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Monochrome liquid glass UI components for Vue 3, with real refraction and a global light source.",
   "type": "module",
   "license": "MIT",
