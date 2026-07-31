@@ -30,8 +30,24 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
-          cache: npm
           registry-url: https://registry.npmjs.org
+          # npm's own guidance for a trusted publisher: never cache in a release
+          # build, so what gets published came from a clean resolve.
+          package-manager-cache: false
+
+      # setup-node writes _authToken=${NODE_AUTH_TOKEN} into .npmrc as part of
+      # honouring registry-url. With no token set the line is empty, and npm
+      # reading it as "auth is already configured" is what stops it from ever
+      # running the OIDC exchange: actions/setup-node#1551. v7 dropped the
+      # placeholder that used to make this certain, so this only removes what is
+      # left of the hazard, and prints the file so a future failure names itself
+      # instead of arriving as a bare 404.
+      - name: Leave the OIDC exchange with nothing to trip over
+        run: |
+          npmrc="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          [ -f "$npmrc" ] && sed -i '/_authToken/d' "$npmrc"
+          echo "--- $npmrc ---"
+          cat "$npmrc" 2>/dev/null || echo "(no .npmrc)"
 
       - run: npm ci
 
