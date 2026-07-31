@@ -21,16 +21,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      # Deliberately without registry-url. It writes an .npmrc holding
-      # _authToken=${NODE_AUTH_TOKEN} and exports a placeholder for that
-      # variable, so npm authenticates with a token that was never real and the
-      # registry answers 404 instead of exchanging the OIDC one. The default
-      # registry is the one we want anyway.
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      # registry-url is what tells npm which registry to run the OIDC exchange
+      # against, so it has to stay. Version 4 of this action also exported a
+      # placeholder NODE_AUTH_TOKEN alongside it, which npm found, used, and got
+      # a 404 for; v7 leaves the exchange alone. NODE_AUTH_TOKEN is set nowhere
+      # in this file on purpose.
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
+          registry-url: https://registry.npmjs.org
 
       - run: npm ci
 
@@ -55,13 +56,11 @@ jobs:
       - name: Show what is about to be published
         run: npm pack --dry-run
 
-      # Proves the OIDC exchange happened before anything is sent, since the
-      # failure mode otherwise is a bare 404 from the registry that reads like
-      # the package does not exist.
-      - name: Show the npm version and who it is publishing as
-        run: |
-          npm --version
-          npm whoami || echo "not authenticated yet, the exchange happens at publish"
+      # The exchange needs npm 11.5.1 or newer, and its absence looks from the
+      # error exactly like a credential problem. Printed so the next failure
+      # says which of the two it is.
+      - name: Show the npm version
+        run: npm --version
 
       # Authenticated by the trusted publisher on npm, through the OIDC token
       # the id-token permission above mints. There is no secret to hold.
