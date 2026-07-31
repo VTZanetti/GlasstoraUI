@@ -35,6 +35,7 @@ import GlassTooltip from './components/GlassTooltip.vue'
 import GlassPopover from './components/GlassPopover.vue'
 import GlassModal from './components/GlassModal.vue'
 import GlassDrawer from './components/GlassDrawer.vue'
+import GlassToast from './components/GlassToast.vue'
 import GlassTerminal from './components/GlassTerminal.vue'
 
 /** Every component in the catalogue, keyed by its default name. */
@@ -72,6 +73,7 @@ export const components: Record<string, Component> = {
   GlassPopover,
   GlassModal,
   GlassDrawer,
+  GlassToast,
   GlassTerminal,
 }
 
