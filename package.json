@@ -75,7 +75,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build && npm run check:dist",
+    "check:dist": "node scripts/check-dist.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
