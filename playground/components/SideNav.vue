@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 interface NavItem {
   id: string
@@ -9,7 +9,14 @@ interface NavItem {
 const props = defineProps<{ items: readonly NavItem[] }>()
 
 const active = ref(props.items[0]?.id ?? '')
+const listRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | undefined
+
+// The list scrolls inside its own column now, so the entry being highlighted
+// can sit outside the part of it that is on screen.
+watch(active, (id) => {
+  listRef.value?.querySelector(`a[href="#${id}"]`)?.scrollIntoView({ block: 'nearest' })
+})
 
 onMounted(() => {
   observer = new IntersectionObserver(
@@ -31,7 +38,7 @@ onBeforeUnmount(() => observer?.disconnect())
 </script>
 
 <template>
-  <nav class="nav" aria-label="Navegação da página">
+  <nav ref="listRef" class="nav" aria-label="Navegação da página">
     <ul class="nav__list">
       <li v-for="item in items" :key="item.id">
         <a
@@ -50,8 +57,23 @@ onBeforeUnmount(() => observer?.disconnect())
 <style scoped>
 .nav {
   position: sticky;
-  top: 32px;
+  /* Far enough down that the hero buttons clear the list instead of sitting on
+     top of it while the page scrolls past them. */
+  top: 64px;
   align-self: start;
+  /* At thirty six components the list is taller than a laptop viewport, and a
+     sticky column that overflows puts its last entries out of reach for good,
+     since it does not scroll with the page. It scrolls, but without drawing a
+     bar: this is a quiet index beside the content, and the active entry is
+     brought into view on its own as the page moves. */
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
 }
 
 .nav__list {
